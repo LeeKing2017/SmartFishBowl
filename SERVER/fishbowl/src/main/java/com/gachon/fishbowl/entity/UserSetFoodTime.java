@@ -27,5 +27,5 @@ public class UserSetFoodTime {
 
     @ManyToOne
     @JoinColumn(name = "ID")
-    private Sensing sensing;
+    private UserSet userSet;
 }

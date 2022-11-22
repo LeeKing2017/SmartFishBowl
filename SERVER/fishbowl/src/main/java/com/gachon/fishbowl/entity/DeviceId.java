@@ -18,4 +18,7 @@ public class DeviceId {
     @Id
     @Column(name = "DEVICE_ID")
     private Long id;
+
+    @Column(name = "IP_ADDRESS")
+    private String ipAddress;
 }
