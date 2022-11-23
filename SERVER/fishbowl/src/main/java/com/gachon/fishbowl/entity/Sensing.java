@@ -39,9 +39,4 @@ public class Sensing {
     @ManyToOne
     @JoinColumn(name = "DEVICE_ID")
     private DeviceId deviceId;
-/*    데이터 받는 순간의 시간 값
-    @NotNull
-    @Column(name = "DATE")
-    private LocalDateTime date = LocalDateTime.now();*/
-
 }

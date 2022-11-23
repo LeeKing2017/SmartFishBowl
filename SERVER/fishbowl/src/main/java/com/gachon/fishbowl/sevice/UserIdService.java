@@ -21,4 +21,6 @@ public class UserIdService {
     public Optional<UserId> getUserId(String email) {
         return userIdRepository.findById(email);
     }
+
+
 }

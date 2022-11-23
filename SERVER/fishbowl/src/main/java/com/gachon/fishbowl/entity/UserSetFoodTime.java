@@ -25,6 +25,9 @@ public class UserSetFoodTime {
     @Column(name = "USER_SET_FOOD_TIME")
     private LocalTime foodTime;
 
+    @Column(name = "NUMBER_OF_FEEDS")
+    private Integer feedCnt;
+
     @ManyToOne
     @JoinColumn(name = "ID")
     private UserSet userSet;
