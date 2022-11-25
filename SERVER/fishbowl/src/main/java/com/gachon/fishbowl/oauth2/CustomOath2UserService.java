@@ -91,6 +91,7 @@ public class CustomOath2UserService extends DefaultOAuth2UserService {
 
             attributes.put("email",oAuth2User.getAttribute("email").toString());
             attributes.put("sub",oAuth2User.getAttribute("sub").toString());
+            attributes.put("name", oAuth2User.getName());
 
             user = new DefaultOAuth2User(authorities, attributes,"email");
             log.info("user : {}",user);
