@@ -20,22 +20,18 @@ public class UserSet {
     private Long id;
 
     //앱에서 설정한 물 온도
-    @NotNull
     @Column(name = "USER_SET_TEMPERATURE")
     private double userSetTemperature;
 
     //앱에서 설정한 물 수위
-    @NotNull
     @Column(name = "USER_SET_WATER_LEVEL")
     private int userSetWaterLevel;
 
     //앱에서 설정한 물 탁도
-    @NotNull
     @Column(name = "USER_SET_TURBIDITY")
     private double userSetTurbidity;
 
     //앱에서 설정한 물 ph
-    @NotNull
     @Column(name = "USER_SET_PH")
     private double userSetPh;
 

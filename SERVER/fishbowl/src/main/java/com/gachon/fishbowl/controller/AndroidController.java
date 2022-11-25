@@ -1,5 +1,7 @@
 package com.gachon.fishbowl.controller;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
+import com.gachon.fishbowl.dto.FeedTimeDto;
 import com.gachon.fishbowl.dto.LoginDto;
 import com.gachon.fishbowl.dto.TokenDto;
 import com.gachon.fishbowl.jwt.JwtFilter;
@@ -36,14 +38,6 @@ public class AndroidController {
 
     private final TokenProvider tokenProvider;
 
-    @GetMapping("/oauth2/callback")
-    String calback() {
-        return "/oauth2/callback";
-    }
-
-
-
-//    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/")
     ResponseEntity<TokenDto> index(@AuthenticationPrincipal OAuth2User oAuth2User) {
         log.info("index 진입");
@@ -68,19 +62,33 @@ public class AndroidController {
         }
         Authentication authentication = tokenProvider.getAuthentication(tokenDto.getToken());
         log.info("authentication.getAuthorities().toString() : {}", authentication.getAuthorities().toString());
+        log.info("{}",authentication.getPrincipal());
+        log.info("{}",authentication.getName());
         if (authentication.getAuthorities().toString().equals("[ROLE_USER]")){
             return new ResponseEntity<>("okoko", HttpStatus.OK);
         }
         return new ResponseEntity<>("nono", HttpStatus.BAD_REQUEST);
     }
     //회원 체크 후 먹이시간 세팅값 받는 거
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    ResponseEntity<String> receiveFeedTime(FeedTimeDto feedTimeDto) {
+//        if (!tokenProvider.validateToken(feedTimeDto.getToken())) {
+//            return new ResponseEntity<>("BAD_REQUEST", HttpStatus.BAD_REQUEST);
+//        }
+//        Authentication authentication = tokenProvider.getAuthentication(feedTimeDto.getToken());
+//        String userName = authentication.getName();
+//        log.info("{}이 먹이시간 설정 메서드 호출",userName);
+//        if (feedTimeDto.getFirstTime() != null && feedTimeDto.getNumberOfFirstFeedings() != null) {
+//
+//        }
+//    }
 
     //온도 탁도 ph 블라블라 묶어서 세팅값 받는 거 //post
 
     //회원 체크 후 해당 기기의 가장 최근 아두이노 센싱 데이터 리턴 - 묶어서
 
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
 
 
 }

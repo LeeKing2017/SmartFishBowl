@@ -1,8 +1,11 @@
 package com.gachon.fishbowl.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @Controller
 public class ArduinoController {
@@ -15,4 +18,12 @@ public class ArduinoController {
     //물 탁도 세팅값 이탈 시 앱으로 알림
     //물 수위 세팅값 이탈 시 앱으로 알림
     //물 ph 세팅값 이탈 시 앱으로 알림
+
+//    @GetMapping("/bowl")
+//    public String chatGET(){
+//
+//        log.info("@ChatController, chat GET()");
+//
+//        return "chat";
+//    }
 }

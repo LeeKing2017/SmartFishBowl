@@ -1,5 +1,6 @@
-package com.gachon.fishbowl.config;
+package com.gachon.fishbowl.config.security;
 
+import com.gachon.fishbowl.config.security.CustomOAuth2SuccessHandler;
 import com.gachon.fishbowl.jwt.*;
 import com.gachon.fishbowl.oauth2.CustomOath2UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +10,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
 @EnableWebSecurity //기본적인 웹보안 실행
@@ -36,7 +33,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/authenticate").permitAll()
                 .mvcMatchers("/api/signup").permitAll()
                 .mvcMatchers("/oauth2/authorization/google").permitAll()
-                .mvcMatchers("/","/test/**").permitAll()
+                .mvcMatchers("/","/test/**","/bowl").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
 

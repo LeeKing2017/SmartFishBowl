@@ -41,11 +41,6 @@ public class CustomOath2UserService extends DefaultOAuth2UserService {
     @Autowired
     private UserIdRepository userIdRepository;
 
-    private final HttpSession httpSession;
-
-    private PasswordEncoder passwordEncoder;
-
-
     /**
      * 구글 로그인 클릭 -> 구글 로그인 창 -> 로그인 완료 시 code리턴 -> OAuth2 client라이브러리가 Acess Token 요청 -> Acess Token을 받으면 이것이 userRequest임
      * userRequest로 회원 프로필을 받음(이때 loadUser 사용) -> 회원 프로필 받음
@@ -63,11 +58,6 @@ public class CustomOath2UserService extends DefaultOAuth2UserService {
 
         if (userIdRepository.findById(oAuth2User.getAttributes().get("email").toString()).isEmpty()) {
             log.info("저장메서드 실행 {}",oAuth2User.getAttributes());
-//            UserId userId = new UserId();
-//            userId.setId(oAuth2User.getAttribute("email").toString());
-//            userId.setPw(passwordEncoder.encode(oAuth2User.getAttribute("sub").toString()));
-//
-//            userId.setRole(Role.USER);
             userIdRepository.save(
                     UserId.builder()
                             .id(oAuth2User.getAttribute("email").toString())
@@ -93,7 +83,6 @@ public class CustomOath2UserService extends DefaultOAuth2UserService {
             log.info("headers : {}",headers);
             log.info("headers.get(\"Authorization\") : {}",headers.get("Authorization"));
 
-            // 헤더에만 접근 코드를 넣어서 전송하므로 파라미터로 넘길 값은 없다.
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
@@ -102,20 +91,10 @@ public class CustomOath2UserService extends DefaultOAuth2UserService {
 
             attributes.put("email",oAuth2User.getAttribute("email").toString());
             attributes.put("sub",oAuth2User.getAttribute("sub").toString());
-//            attributes.put("token",tokenProvider.createToken())
 
             user = new DefaultOAuth2User(authorities, attributes,"email");
             log.info("user : {}",user);
-            httpSession.setAttribute("user",user);
-
-//            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, accessToken, authorities);
-//            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         return user;
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 }

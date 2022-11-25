@@ -1,4 +1,4 @@
-package com.gachon.fishbowl.config;
+package com.gachon.fishbowl.config.security;
 
 import com.gachon.fishbowl.jwt.JwtFilter;
 import com.gachon.fishbowl.jwt.TokenProvider;
