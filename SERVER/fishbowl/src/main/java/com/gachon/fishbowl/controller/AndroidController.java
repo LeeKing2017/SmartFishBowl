@@ -1,34 +1,20 @@
 package com.gachon.fishbowl.controller;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
-import com.gachon.fishbowl.dto.FeedTimeDto;
-import com.gachon.fishbowl.dto.LoginDto;
 import com.gachon.fishbowl.dto.TokenDto;
 import com.gachon.fishbowl.jwt.JwtFilter;
 import com.gachon.fishbowl.jwt.TokenProvider;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
