@@ -25,15 +25,15 @@ public class TestController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @PostMapping("/api/authenticate")
-    ResponseEntity<TokenDto> asdf(@Validated @RequestBody LoginDto loginDto) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPw());
-        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-
-        String token = tokenProvider.createToken(authenticate);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer "+ token);
-        return new ResponseEntity<>(new TokenDto(token), httpHeaders, HttpStatus.OK);
-    }
+//    @PostMapping("/api/authenticate")
+//    ResponseEntity<TokenDto> asdf(@Validated @RequestBody LoginDto loginDto) {
+//        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPw());
+//        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);
+//        SecurityContextHolder.getContext().setAuthentication(authenticate);
+//
+//        String token = tokenProvider.createToken(authenticate);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer "+ token);
+//        return new ResponseEntity<>(new TokenDto(token), httpHeaders, HttpStatus.OK);
+//    }
 }

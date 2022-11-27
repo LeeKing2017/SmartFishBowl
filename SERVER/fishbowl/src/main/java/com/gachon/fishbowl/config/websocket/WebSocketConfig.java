@@ -1,6 +1,6 @@
 package com.gachon.fishbowl.config.websocket;
 
-import com.gachon.fishbowl.sevice.socket.ArduinoSocketService;
+import com.gachon.fishbowl.service.socket.ArduinoSocketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

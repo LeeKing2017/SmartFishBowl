@@ -2,20 +2,15 @@ package com.gachon.fishbowl.oauth2;
 
 import com.gachon.fishbowl.entity.UserId;
 import com.gachon.fishbowl.entity.role.Role;
-import com.gachon.fishbowl.jwt.TokenProvider;
 import com.gachon.fishbowl.repository.UserIdRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -27,7 +22,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +42,7 @@ public class CustomOath2UserService extends DefaultOAuth2UserService {
     @Override //google로 받은 userRequest data handling
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOath2UserService시작: {}", super.loadUser(userRequest).getAttributes());
+        log.info("userRequest.getAccessToken() : {}",userRequest.getAccessToken().getTokenValue());
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
