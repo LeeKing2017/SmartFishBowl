@@ -7,6 +7,26 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class FirebaseService {
+    public String sendPhMessage123(String registrationToken, String Ph, String deviceId) throws FirebaseMessagingException {
+        Message message = Message.builder()
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setTtl(3600*1000)
+                        .setPriority(AndroidConfig.Priority.HIGH)
+                        .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
+                        .setDirectBootOk(true)
+                        .setNotification(AndroidNotification.builder()
+                                .setTitle("로켓단") // 알림 제목
+                                .setBody("귀하의 안드로이드는 해킹되었다.") // 알림 본문
+                                .build())
+                        .build())
+                .setToken(registrationToken) // 요청자의 디바이스에 대한 registration token으로 설정
+                .build();
+
+        // Send a message to the device corresponding to the provided registration token.
+        String response = FirebaseMessaging.getInstance().send(message);
+
+        return response;
+    }
     public String sendTemperatureMessage(String registrationToken, String temperature, String deviceId) throws FirebaseMessagingException {
         Message message = Message.builder()
                 .setAndroidConfig(AndroidConfig.builder()

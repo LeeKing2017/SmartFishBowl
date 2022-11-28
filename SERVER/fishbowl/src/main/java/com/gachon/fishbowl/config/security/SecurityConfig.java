@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/authenticate").permitAll()
                 .mvcMatchers("/api/signup").permitAll()
                 .mvcMatchers("/oauth2/authorization/google").permitAll()
-                .mvcMatchers("/","/login","/bowl","/sendMessageTest1","/sendMessageTest2","/sendMessageTest3","/sendMessageTest4","/sendMessageTest5").permitAll()
+                .mvcMatchers("/","/login","/bowl","/sendMessageTest123","/sendMessageTest1","/sendMessageTest2","/sendMessageTest3","/sendMessageTest4","/sendMessageTest5").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
 

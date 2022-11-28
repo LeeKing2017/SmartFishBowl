@@ -16,8 +16,8 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() throws IOException {
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(new ClassPathResource("fishbowl-369411-firebase-adminsdk-4xyml-ee78a38468.json").getInputStream()))
-                .setProjectId("fishbowl-369411")
+                .setCredentials(GoogleCredentials.fromStream(new ClassPathResource("webdb-368205-firebase-adminsdk-tl83y-35db2b6353.json").getInputStream()))
+                .setProjectId("webdb-368205")
                 .build();
         if (FirebaseApp.getApps().isEmpty()) {
             FirebaseApp.initializeApp(options);

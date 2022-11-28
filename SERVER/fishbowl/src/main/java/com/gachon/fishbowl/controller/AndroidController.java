@@ -60,7 +60,7 @@ public class AndroidController {
 //        return new ResponseEntity<>(new TokenDto(token), httpHeaders, HttpStatus.OK);
 //    }
 
-    @GetMapping("/") //test용 access token 발급 용도
+    @GetMapping("/") //test용 access token 발급 용
     ResponseEntity<TokenDto> index(@AuthenticationPrincipal OAuth2User oAuth2User) {
         log.info("index 진입");
         return new ResponseEntity<>(HttpStatus.OK);

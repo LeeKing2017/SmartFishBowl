@@ -18,7 +18,15 @@ import java.io.IOException;
 public class FirebaseController {
     private final FirebaseService firebaseService;
     private final SensingRepository sensingRepository;
-    private final String registrationToken = "cP4NvYdrTie6GYgZL9qX_u:APA91bFO4sYsqTJr1pd3mAkKi1bRpq7cbLNLfRWPnrxZqjUhH_i8c2IwTTuCDdriGstra8JFVdN18y0rjiT1zbBbd7QSPqd4GulkcdDoc99QVcxxRGf-rHVT67mvNkYUTS9z9-aKyWEN";
+    private final String registrationToken = "dFZky7irRF2YS5V-Biovdb:APA91bFW4yACjB1kInkJrKVyxsYcDDg6WhvViysaOPEepLSlxuuidC5tDL3_TROy0uO2PFjvQqYDzS1PQDQ8SYt-ZCxa8SkbkOulg10xbKz57YKC0a4wOQwT-VowmzmLw6EqbnOy0y65";
+
+    @ResponseBody
+    @GetMapping("/sendMessageTest123")
+    public String sendTemperatureTest123() throws FirebaseMessagingException, IOException {
+        firebaseService.sendPhMessage123(registrationToken, "10","123");
+
+        return "Ok";
+    }
     @ResponseBody
     @GetMapping("/sendMessageTest1")
     public String sendTemperatureTest() throws FirebaseMessagingException, IOException {
