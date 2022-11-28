@@ -32,4 +32,12 @@ public class UserDeviceService {
     public Optional<UserDevice> getUserDeviceByDeviceId(DeviceId deviceId) {
         return userDeviceRepository.findByDeviceId(deviceId);
     }
+
+    public Boolean isMatchedEmailWithDeviceId(String email, Long deviceId) {
+        DeviceId build = DeviceId.builder().id(deviceId).build();
+        if (userDeviceRepository.findByDeviceId(build).get().getUserId().equals(email)) {
+            return true;
+        }
+        return false;
+    }
 }

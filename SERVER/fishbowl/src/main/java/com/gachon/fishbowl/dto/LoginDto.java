@@ -11,11 +11,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginDto {
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String username;
-
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String pw;
+    String accessToken;
+    Long deviceId;
+    String firebaseToken;
 }

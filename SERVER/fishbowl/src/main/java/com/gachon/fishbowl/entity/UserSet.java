@@ -21,19 +21,19 @@ public class UserSet {
 
     //앱에서 설정한 물 온도
     @Column(name = "USER_SET_TEMPERATURE")
-    private double userSetTemperature;
+    private Double userSetTemperature;
 
     //앱에서 설정한 물 수위
     @Column(name = "USER_SET_WATER_LEVEL")
-    private int userSetWaterLevel;
+    private Integer userSetWaterLevel;
 
     //앱에서 설정한 물 탁도
     @Column(name = "USER_SET_TURBIDITY")
-    private double userSetTurbidity;
+    private Double userSetTurbidity;
 
     //앱에서 설정한 물 ph
     @Column(name = "USER_SET_PH")
-    private double userSetPh;
+    private Double userSetPh;
 
     @ManyToOne
     @JoinColumn(name = "DEVICE_ID")

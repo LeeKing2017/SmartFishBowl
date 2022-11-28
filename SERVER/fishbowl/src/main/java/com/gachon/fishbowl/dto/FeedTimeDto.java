@@ -11,7 +11,9 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class FeedTimeDto {
 
-    String token;
+    String jwtToken;
+
+    Long deviceId;
 
     LocalTime firstTime;
     LocalTime secondTime;

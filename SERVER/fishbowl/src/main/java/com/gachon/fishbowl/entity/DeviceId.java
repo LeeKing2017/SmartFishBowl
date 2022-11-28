@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,4 @@ public class DeviceId {
     @Id
     @Column(name = "DEVICE_ID")
     private Long id;
-
-    @Column(name = "IP_ADDRESS")
-    private String ipAddress;
 }

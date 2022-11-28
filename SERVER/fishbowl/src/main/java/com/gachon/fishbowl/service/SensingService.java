@@ -18,7 +18,8 @@ public class SensingService {
      * @param deviceId
      * @return SensingRepository에서 deviceId로 검색한 Sensing 객체
      */
-    public Optional<Sensing> getSensingData(DeviceId deviceId) {
-        return sensingRepository.findByDeviceId(deviceId);
+    public Optional<Sensing> getSensingData(Long deviceId) {
+        DeviceId build = DeviceId.builder().id(deviceId).build();
+        return sensingRepository.findByDeviceId(build);
     }
 }

@@ -18,49 +18,6 @@ import java.io.IOException;
 public class FirebaseController {
     private final FirebaseService firebaseService;
     private final SensingRepository sensingRepository;
-    private final String registrationToken = "dFZky7irRF2YS5V-Biovdb:APA91bFW4yACjB1kInkJrKVyxsYcDDg6WhvViysaOPEepLSlxuuidC5tDL3_TROy0uO2PFjvQqYDzS1PQDQ8SYt-ZCxa8SkbkOulg10xbKz57YKC0a4wOQwT-VowmzmLw6EqbnOy0y65";
+    private final String registrationToken = "eYMoV6McTUiJtACu_xc9MZ:APA91bF1K7i-uC3_rjBP3EaDDJDNNzUhjMH1fMYvLPgoA8PGoeFMiGZsslFMu2PvgaW07IaQURYmzFpQibZvi_AYxhnspRc57uUvZ8PsGX2bHOaONWNi2LfWpOHzAimmC-0C3_SYo_lm";
 
-    @ResponseBody
-    @GetMapping("/sendMessageTest123")
-    public String sendTemperatureTest123() throws FirebaseMessagingException, IOException {
-        firebaseService.sendPhMessage123(registrationToken, "10","123");
-
-        return "Ok";
-    }
-    @ResponseBody
-    @GetMapping("/sendMessageTest1")
-    public String sendTemperatureTest() throws FirebaseMessagingException, IOException {
-        firebaseService.sendTemperatureMessage(registrationToken, "10","123");
-
-        return "Ok";
-    }
-
-    @ResponseBody
-    @GetMapping("/sendMessageTest2")
-    public String sendWaterLevelTest() throws FirebaseMessagingException, IOException {
-        firebaseService.sendWaterLevelMessage(registrationToken, "10","123");
-
-        return "Ok";
-    }
-    @ResponseBody
-    @GetMapping("/sendMessageTest3")
-    public String sendPhTest() throws FirebaseMessagingException, IOException {
-        firebaseService.sendPhMessage(registrationToken, "10","123");
-
-        return "Ok";
-    }
-    @ResponseBody
-    @GetMapping("/sendMessageTest4")
-    public String sendTurbidityTest() throws FirebaseMessagingException, IOException {
-        firebaseService.sendTurbidityMessage(registrationToken, "10","123");
-
-        return "Ok";
-    }
-    @ResponseBody
-    @GetMapping("/sendMessageTest5")
-    public String sendMessageTest() throws FirebaseMessagingException, IOException {
-        firebaseService.sendLeftoversMessage(registrationToken,"123");
-
-        return "Ok";
-    }
 }
