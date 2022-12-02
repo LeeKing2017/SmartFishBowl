@@ -2,13 +2,11 @@ package com.gachon.fishbowl.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class UserSetDTO {
-    String jwtToken;
     Double temperature;
     Integer waterLevel;
     Double turbidity;

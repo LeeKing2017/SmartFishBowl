@@ -12,6 +12,5 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class LoginDto {
     String accessToken;
-    Long deviceId;
     String firebaseToken;
 }

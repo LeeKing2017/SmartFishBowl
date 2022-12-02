@@ -19,4 +19,5 @@ public class DeviceId {
     @Id
     @Column(name = "DEVICE_ID")
     private Long id;
+
 }

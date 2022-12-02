@@ -22,19 +22,19 @@ public class Sensing {
     //물 온도
     @NotNull
     @Column(name = "MEASURED_TEMPERATURE")
-    private double measuredTemperature;
+    private Double measuredTemperature;
     //물 수위
     @NotNull
     @Column(name = "MEASURED_WATER_LEVEL")
-    private int measuredWaterLevel;
+    private Integer measuredWaterLevel;
     //물 탁도
     @NotNull
     @Column(name = "MEASURED_TURBIDITY")
-    private double measuredTurbidity;
+    private Double measuredTurbidity;
     //물 ph
     @NotNull
     @Column(name = "MEASURED_PH")
-    private double measuredPh;
+    private Double measuredPh;
     //DeviceId 외래키
     @ManyToOne
     @JoinColumn(name = "DEVICE_ID")

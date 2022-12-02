@@ -4,14 +4,11 @@ import lombok.*;
 
 import java.time.LocalTime;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedTimeDto {
-
-    String jwtToken;
 
     Long deviceId;
 

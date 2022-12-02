@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class GetSensingDto {
-    String jwtToken;
     Long deviceId;
 }

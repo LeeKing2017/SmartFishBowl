@@ -3,6 +3,7 @@ package com.gachon.fishbowl.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,19 +27,21 @@ public class TokenProvider implements InitializingBean {
 
     private static final String AUTHORITIES_KEY = "ROLE";
 
-    private final String secret;
-    private final long tokenValidityInMilliseconds;
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.token-validity-in-seconds}")
+    private long tokenValidityInMilliseconds;
 
     private Key key;
 
-    public TokenProvider(@Value("${jwt.secret}") String secret,
-                         @Value("${jwt.token-validity-in-seconds}") long tokenValidityInMilliseconds) {
-        this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInMilliseconds * 1000;
-    }
+//    public TokenProvider(@Value("${jwt.secret}") String secret,
+//                         @Value("${jwt.token-validity-in-seconds}") long tokenValidityInMilliseconds) {
+//        this.secret = secret;
+//        this.tokenValidityInMilliseconds = tokenValidityInMilliseconds * 1000;
+//    }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -50,16 +50,24 @@ public class TokenProvider implements InitializingBean {
         String authority = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        log.info("authority : {}", authority);
+        log.info("authority : {}", authority); //user라고 나옴
 
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
+//        return Jwts.builder()
+//                .setSubject(authentication.getName())
+//                .claim(AUTHORITIES_KEY, authority)
+//                .signWith(key, SignatureAlgorithm.HS512)
+//                .claim("email",authentication.getName())
+//                .setExpiration(validity)
+//                .compact();
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject("jacob")
                 .claim(AUTHORITIES_KEY, authority)
-                .signWith(key, SignatureAlgorithm.HS512)
+                .claim("email", authentication.getName())
                 .setExpiration(validity)
+                .signWith(key,SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -75,7 +83,7 @@ public class TokenProvider implements InitializingBean {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        User user = new User(claims.getSubject(), "", authorities);
+        User user = new User(claims.get("email",String.class), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(user, token, authorities);
     }

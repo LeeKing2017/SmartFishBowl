@@ -1,6 +1,7 @@
 package com.gachon.fishbowl.config.security;
 
 import com.gachon.fishbowl.config.security.CustomOAuth2SuccessHandler;
+import com.gachon.fishbowl.entity.role.Role;
 import com.gachon.fishbowl.jwt.*;
 import com.gachon.fishbowl.oauth2.CustomOath2UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,27 +31,9 @@ public class SecurityConfig {
         httpSecurity
 
                 .authorizeRequests()
-                .mvcMatchers("/api/authenticate").permitAll()
-                .mvcMatchers("/api/signup").permitAll()
-                .mvcMatchers("/oauth2/authorization/google").permitAll()
-                .mvcMatchers("/","/login","/bowl","/sendMessageTest123","/sendMessageTest1","/sendMessageTest2","/sendMessageTest3","/sendMessageTest4","/sendMessageTest5").permitAll()
+                .mvcMatchers("/","/login","/bowl","/sendMessageTest123","/sendMessageTest1","/sendMessageTest2","/sendMessageTest3","/sendMessageTest4","/sendMessageTest5","/test").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
-
-                .oauth2Login()
-                .loginPage("/oauth2/authorization/google")
-                .defaultSuccessUrl("/")
-//                .redirectionEndpoint()
-//                .baseUri("/")
-
-
-                .userInfoEndpoint().userService(customOath2UserService)
-
-                .and().successHandler(customOAuth2SuccessHandler)
-
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-
-                .and()
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
