@@ -122,7 +122,7 @@ public class AndroidController {
     }
 
     @PostMapping("/setFeedTime")//회원 체크 후 먹이시간 세팅값 받는 거
-    ResponseEntity<String> receiveFeedTime(FeedTimeDto feedTimeDto) {
+    ResponseEntity<String> receiveFeedTime(@RequestBody FeedTimeDto feedTimeDto) {
         log.info("feedTimeDto.toString() : {}",feedTimeDto.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
@@ -159,7 +159,7 @@ public class AndroidController {
 
     @PostMapping("/setUserSet")
         //온도 탁도 ph 블라블라 묶어서 세팅값 받는 거
-    ResponseEntity<String> setUserSet(UserSetDTO userSetDTO) {
+    ResponseEntity<String> setUserSet(@RequestBody UserSetDTO userSetDTO) {
         log.info("userSetDTO.toString() : {}",userSetDTO.toString());
         log.info("SecurityContextHolder.getContext().getAuthentication().getName() : {}",SecurityContextHolder.getContext().getAuthentication().getName());
         Optional<DeviceId> deviceId = deviceIdService.getDeviceId(userSetDTO.getDeviceId());
@@ -175,7 +175,7 @@ public class AndroidController {
 
     @PostMapping("/getSensingData")
         //회원 체크 후 해당 기기의 가장 최근 아두이노 센싱 데이터 리턴 - 묶어서
-    ResponseEntity<ResponseAppSensingDto> getSensingData(GetSensingDto getSensingDto) {
+    ResponseEntity<ResponseAppSensingDto> getSensingData(@RequestBody GetSensingDto getSensingDto) {
         log.info("getSensingDto.toString() : {}",getSensingDto.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
@@ -193,7 +193,7 @@ public class AndroidController {
     }
 
     @PostMapping("/signout") //탈퇴
-    ResponseEntity<String> signOut(SignOutDto signOutDto) {
+    ResponseEntity<String> signOut(@RequestBody SignOutDto signOutDto) {
         log.info(signOutDto.toString());
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());
         return new ResponseEntity<>("탈퇴되었습니다",HttpStatus.OK);
