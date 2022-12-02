@@ -3,6 +3,7 @@ package com.gachon.fishbowl.service;
 import com.gachon.fishbowl.entity.DeviceId;
 import com.gachon.fishbowl.entity.UserDevice;
 import com.gachon.fishbowl.entity.UserId;
+import com.gachon.fishbowl.repository.DeviceIdRepository;
 import com.gachon.fishbowl.repository.UserDeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class UserDeviceService {
 
     private final UserDeviceRepository userDeviceRepository;
-
+    private final DeviceIdRepository deviceIdRepository;
     /**
      *
      * @param userId
@@ -42,7 +43,8 @@ public class UserDeviceService {
      */
     public Boolean isMatchedEmailWithDeviceId(String email, Long deviceId) {
         DeviceId build = DeviceId.builder().id(deviceId).build();
-        if (userDeviceRepository.findByDeviceId(build).get().getUserId().equals(email)) {
+        Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
+        if (userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().equals(email)) {
             return true;
         }
         return false;
