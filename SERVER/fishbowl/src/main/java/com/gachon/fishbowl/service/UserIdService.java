@@ -38,4 +38,8 @@ public class UserIdService {
         return userIdRepository.save(userId);
     }
 
+    public void deleteUser(UserId userId) {
+        userIdRepository.delete(userId);
+    }
+
 }

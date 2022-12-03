@@ -44,7 +44,7 @@ public class UserDeviceService {
     public Boolean isMatchedEmailWithDeviceId(String email, Long deviceId) {
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
-        if (userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().equals(email)) {
+        if (userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().getId().equals(email)) {
             return true;
         }
         return false;
@@ -71,5 +71,9 @@ public class UserDeviceService {
 
     public UserDevice saveUserDevice(UserDevice userDevice) {
         return userDeviceRepository.save(userDevice);
+    }
+
+    public void deleteUserDevice(UserDevice userDevice) {
+        userDeviceRepository.delete(userDevice);
     }
 }

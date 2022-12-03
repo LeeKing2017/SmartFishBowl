@@ -91,7 +91,7 @@ public class FirebaseService {
         return response;
     }
 
-    public String sendPhHighessage(String firebaseToken, Double Ph, Long deviceId) throws FirebaseMessagingException {
+    public String sendPhHighMessage(String firebaseToken, Double Ph, Long deviceId) throws FirebaseMessagingException {
         Message message = Message.builder()
                 .setAndroidConfig(AndroidConfig.builder()
                         .setTtl(3600*1000)

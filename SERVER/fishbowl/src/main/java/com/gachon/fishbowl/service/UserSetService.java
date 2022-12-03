@@ -19,12 +19,15 @@ public class UserSetService {
      * @param deviceId
      * @return UserSetRepository에서 DeviceId로 검색한, 유저가 설정한 정보 cf. 온도, 수위, 탁도, ph, 먹이 시간
      */
-    public Optional<UserSet> getUserSet(Long deviceId) {
-        DeviceId build = DeviceId.builder().id(deviceId).build();
-        return userSetRepository.findByDeviceId(build);
+    public Optional<UserSet> getUserSet(DeviceId deviceId) {
+        return userSetRepository.findByDeviceId(deviceId);
     }
 
     public UserSet saveUserSet(UserSet userSet) {
         return userSetRepository.save(userSet);
+    }
+
+    public void deleteUserSet(UserSet userSet) {
+        userSetRepository.delete(userSet);
     }
 }

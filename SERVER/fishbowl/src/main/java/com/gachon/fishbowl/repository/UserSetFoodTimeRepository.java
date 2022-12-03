@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface UserSetFoodTimeRepository extends JpaRepository<UserSetFoodTime, Long> {
     Optional<List<UserSetFoodTime>> findAllByUserSet(UserSet userSet);
+    Optional<UserSetFoodTime> findByUserSet(UserSet userSet);
 }

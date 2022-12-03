@@ -20,15 +20,25 @@ public class UserSetFoodTime {
     @Column(name = "PK")
     private Long id;
 
-    //앱에서 받아온 먹이 주는 시간
-    @NotNull
-    @Column(name = "USER_SET_FOOD_TIME")
-    private LocalTime foodTime;
-
-    @Column(name = "NUMBER_OF_FEEDS")
-    private Integer feedCnt;
-
     @ManyToOne
     @JoinColumn(name = "ID")
     private UserSet userSet;
+
+    @Column(name = "USER_SET_FIRST_FOOD_TIME")
+    private LocalTime firstTime;
+
+    @Column(name = "USER_SET_SECOND_FOOD_TIME")
+    private LocalTime secondTime;
+
+    @Column(name = "USER_SET_THIRD_FOOD_TIME")
+    private LocalTime thirdTime;
+
+    @Column(name = "NUMBER_OF_FIRST_FEEDS")
+    private Integer numberOfFirstFeedings;
+
+    @Column(name = "NUMBER_OF_SECOND_FEEDS")
+    private Integer numberOfSecondFeedings;
+
+    @Column(name = "NUMBER_OF_THIRD_FEEDS")
+    private Integer numberOfThirdFeedings;
 }

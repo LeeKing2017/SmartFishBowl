@@ -1,13 +1,7 @@
 package com.gachon.fishbowl.service.socket;
 
-import com.gachon.fishbowl.entity.DeviceId;
-import com.gachon.fishbowl.entity.Sensing;
-import com.gachon.fishbowl.entity.UserDevice;
-import com.gachon.fishbowl.entity.UserSet;
-import com.gachon.fishbowl.repository.DeviceIdRepository;
-import com.gachon.fishbowl.repository.SensingRepository;
-import com.gachon.fishbowl.repository.UserDeviceRepository;
-import com.gachon.fishbowl.repository.UserSetRepository;
+import com.gachon.fishbowl.entity.*;
+import com.gachon.fishbowl.repository.*;
 import com.gachon.fishbowl.service.FirebaseService;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +21,15 @@ import java.util.*;
 @Component
 @Transactional
 public class ArduinoSocketService extends TextWebSocketHandler {
-
     private static List<WebSocketSession> list = new ArrayList<>();
     private final SensingRepository sensingRepository;
     private final UserSetRepository userSetRepository;
     private final FirebaseService firebaseService;
     private final UserDeviceRepository userDeviceRepository;
     private final DeviceIdRepository deviceIdRepository;
+    private final UserSetFoodTimeRepository userSetFoodTimeRepository;
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
-
-
         String payload = message.getPayload();
         log.info("payload : " + payload);
         JSONObject jsonObject = new JSONObject(payload);
@@ -52,11 +43,18 @@ public class ArduinoSocketService extends TextWebSocketHandler {
 
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(byId.get());
+        Optional<UserSetFoodTime> byUserSet = userSetFoodTimeRepository.findByUserSet(byDeviceId.get());
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("temperature", byDeviceId.get().getUserSetTemperature().toString());
         stringStringHashMap.put("waterLevel",byDeviceId.get().getUserSetWaterLevel().toString());
         stringStringHashMap.put("turbidity",byDeviceId.get().getUserSetTurbidity().toString());
         stringStringHashMap.put("ph",byDeviceId.get().getUserSetPh().toString());
+        stringStringHashMap.put("firstTime",byUserSet.get().getFirstTime().toString());
+        stringStringHashMap.put("secondTime",byUserSet.get().getSecondTime().toString());
+        stringStringHashMap.put("thirdTime",byUserSet.get().getThirdTime().toString());
+        stringStringHashMap.put("numberOfFirstFeedings",byUserSet.get().getNumberOfFirstFeedings().toString());
+        stringStringHashMap.put("numberOfSecondFeedings",byUserSet.get().getNumberOfSecondFeedings().toString());
+        stringStringHashMap.put("numberOfThirdFeedings",byUserSet.get().getNumberOfThirdFeedings().toString());
         session.sendMessage(new TextMessage(stringStringHashMap.toString()));
     }
 
@@ -82,17 +80,25 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         log.info("탁도 : {}",turbidity);
         log.info("ph : {}",ph);
         log.info("deviceId :  {}",deviceId);
+        Double dbTemperature = 0.0;
+        Integer dbWaterLevel = 0;
+        Double dbTurbidity = 0.0;
+        Double dbPh = 0.0;
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
         Sensing sensing = Sensing.builder()
                 .measuredTemperature(temperature)
                 .measuredWaterLevel(waterLevel)
-                .measuredTurbidity(turbidity)
+                .measuredTurbidity((double) Math.round(turbidity*10)/10)
                 .measuredPh(ph)
                 .deviceId(byId.get()).build();
 
         if(checkLeftovers.isEmpty()){
             if(!sensingRepository.findByDeviceId(byId.get()).isEmpty()){
                 Optional<Sensing> byDeviceId = sensingRepository.findByDeviceId(byId.get());
+                dbTemperature = byDeviceId.get().getMeasuredTemperature();
+                dbWaterLevel = byDeviceId.get().getMeasuredWaterLevel();
+                dbTurbidity = byDeviceId.get().getMeasuredTurbidity();
+                dbPh = byDeviceId.get().getMeasuredPh();
                 byDeviceId.get().setMeasuredTemperature(temperature);
                 byDeviceId.get().setMeasuredWaterLevel(waterLevel);
                 byDeviceId.get().setMeasuredPh(ph);
@@ -107,22 +113,22 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Optional<UserDevice> tokenByDeviceId = userDeviceRepository.findByDeviceId(sensingDeviceId);
         String firebaseToken = tokenByDeviceId.get().getUserId().getFireBaseToken();
         //푸쉬 알림 보내기
-        if (isSensingTemperatureLow(temperature,deviceId)){
+        if (isSensingTemperatureLow(temperature,dbTemperature, deviceId)){
             firebaseService.sendTemperatureLowMessage(firebaseToken,temperature,deviceId);
         }
-        if (isSensingTemperatureHigh(temperature,deviceId)){
+        if (isSensingTemperatureHigh(temperature,dbTemperature, deviceId)){
             firebaseService.sendTemperatureHighMessage(firebaseToken,temperature,deviceId);
         }
-        if (isSensingWaterLevelLow(waterLevel,deviceId)){
+        if (isSensingWaterLevelLow(waterLevel,dbWaterLevel, deviceId)){
             firebaseService.sendWaterLevelLowMessage(firebaseToken,waterLevel,deviceId);
         }
-        if (isSensingPhLow(ph,deviceId)){
+        if (isSensingPhLow(ph,dbPh, deviceId)){
             firebaseService.sendPhLowMessage(firebaseToken,ph,deviceId);
         }
-        if (isSensingPhHigh(ph,deviceId)){
-            firebaseService.sendPhHighessage(firebaseToken,ph,deviceId);
+        if (isSensingPhHigh(ph,dbPh, deviceId)){
+            firebaseService.sendPhHighMessage(firebaseToken,ph,deviceId);
         }
-        if (isSensingTurbidity(turbidity, deviceId)){
+        if (isSensingTurbidity(turbidity, dbTurbidity, deviceId)){
             firebaseService.sendTurbidityMessage(firebaseToken,turbidity,deviceId);
         }
         if (isSensingLeftovers(checkLeftovers,deviceId)){
@@ -132,9 +138,17 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     }
 
     //푸쉬 알림 조건
-    public Boolean isSensingTemperatureLow(Double temperature, Long deviceId){
+    public Boolean isSensingTemperatureLow(Double temperature, Double dbTemperature, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
+        dbTemperature = (double) Math.round(dbTemperature);
+        Double dtoTemperature = (double) Math.round(temperature);
+        if(dbTemperature.compareTo(dtoTemperature) == 0){
+            log.info("DB 센싱 : {}", dbTemperature);
+            log.info("DTO 센싱 : {}",dtoTemperature);
+            log.info("== 결과 : {}", (dbTemperature.compareTo(dtoTemperature) == 0));
+            return false;
+        }
         if(byDeviceId.get().getUserSetTemperature() > temperature){
             return true;
         }
@@ -142,9 +156,18 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             return false;
     }
 
-    public Boolean isSensingTemperatureHigh(Double temperature, Long deviceId){
+
+    public Boolean isSensingTemperatureHigh(Double temperature, Double dbTemperature, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
+        dbTemperature = (double) Math.round(dbTemperature);
+        Double dtoTemperature = (double) Math.round(temperature);
+        if(dbTemperature.compareTo(dtoTemperature) == 0){
+            log.info("DB 센싱 : {}", dbTemperature);
+            log.info("DTO 센싱 : {}",dtoTemperature);
+            log.info("== 결과 : {}", (dbTemperature.compareTo(dtoTemperature) == 0));
+            return false;
+        }
         if(byDeviceId.get().getUserSetTemperature() < temperature){
             return true;
         }
@@ -152,9 +175,14 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             return false;
     }
 
-    public Boolean isSensingWaterLevelLow(Integer waterLevel, Long deviceId){
+    public Boolean isSensingWaterLevelLow(Integer waterLevel, Integer dbWaterLevel, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
+        dbWaterLevel = dbWaterLevel / 100;
+        Integer dtoWaterLevel = waterLevel / 100;
+        if(dbWaterLevel.equals(dtoWaterLevel)){
+            return false;
+        }
         if(byDeviceId.get().getUserSetWaterLevel() > waterLevel){
             return true;
         }
@@ -162,9 +190,14 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             return false;
     }
 
-    public Boolean isSensingPhLow(Double ph, Long deviceId){
+    public Boolean isSensingPhLow(Double ph, Double dbPh, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
+        dbPh = (double) (Math.round(dbPh * 10) / 10);
+        Double dtoPh = (double) (Math.round(ph * 10) / 10);
+        if (dbPh.compareTo(dtoPh) == 0){
+            return false;
+        }
         if(byDeviceId.get().getUserSetPh() > ph ){
             return true;
         }
@@ -172,9 +205,14 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             return false;
     }
 
-    public Boolean isSensingPhHigh(Double ph, Long deviceId){
+    public Boolean isSensingPhHigh(Double ph, Double dbPh, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
+        dbPh = (double) (Math.round(dbPh * 10) / 10);
+        Double dtoPh = (double) (Math.round(ph * 10) / 10);
+        if (dbPh.compareTo(dtoPh) == 0){
+            return false;
+        }
         if(byDeviceId.get().getUserSetPh() < ph ){
             return true;
         }
@@ -182,10 +220,15 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             return false;
     }
 
-    public Boolean isSensingTurbidity(Double turbidity, Long deviceId){
+    public Boolean isSensingTurbidity(Double turbidity, Double dbTurbidity, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        if (byDeviceId.get().getUserSetTurbidity() != turbidity){
+        dbTurbidity = (double) (Math.round(dbTurbidity * 10) / 10);
+        Double dtoTurbidity = (double) (Math.round(turbidity * 10) / 10);
+        if (dbTurbidity.compareTo(dtoTurbidity) == 0){
+            return false;
+        }
+        if (byDeviceId.get().getUserSetTurbidity() < turbidity){
             return true;
         }
         else
@@ -193,7 +236,6 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     }
 
     public Boolean isSensingLeftovers(String checkLeftovers, Long deviceId){
-        DeviceId build = DeviceId.builder().id(deviceId).build();
         if (checkLeftovers.isEmpty()){
             return false;
         }

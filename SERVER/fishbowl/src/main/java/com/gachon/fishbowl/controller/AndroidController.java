@@ -5,16 +5,12 @@ import com.gachon.fishbowl.entity.*;
 import com.gachon.fishbowl.entity.role.Role;
 import com.gachon.fishbowl.jwt.TokenProvider;
 import com.gachon.fishbowl.service.*;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -25,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.PasswordAuthentication;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -45,7 +40,7 @@ public class AndroidController {
 
     @PostMapping("/login")
     ResponseEntity<String> responseJwtToken(@RequestBody LoginDto loginDto) { //파베 토큰, 엑세스 토큰, 디바이스 아디 받아옴
-        String KAKAO_USERINFO_REQUEST_URL="https://kapi.kakao.com/v2/user/me";
+        String KAKAO_USERINFO_REQUEST_URL = "https://kapi.kakao.com/v2/user/me";
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + loginDto.getAccessToken());
@@ -56,12 +51,12 @@ public class AndroidController {
         try {
             ResponseEntity<String> response = restTemplate.exchange(KAKAO_USERINFO_REQUEST_URL, HttpMethod.GET, request, String.class);
             log.info("response : {}", response);
-            log.info("response.getBody() : {}",response.getBody());
+            log.info("response.getBody() : {}", response.getBody());
             JSONObject jsonObject = new JSONObject(response.getBody());
 
             JSONObject kakao_account = jsonObject.getJSONObject("kakao_account");
             String email = kakao_account.getString("email");
-            log.info("email : {}",email);
+            log.info("email : {}", email);
 
             SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(Role.USER.toString());
             if (!userIdService.isRegisteredUsers(email)) {
@@ -78,9 +73,9 @@ public class AndroidController {
                 User createUser = new User(email, "", Collections.singleton(simpleGrantedAuthority));
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(createUser, loginDto.getAccessToken(), Collections.singleton(simpleGrantedAuthority));
                 String token = tokenProvider.createToken(usernamePasswordAuthenticationToken);
-                log.info("token 발급: {}",token);
-                return new ResponseEntity<>(token,HttpStatus.OK);
-            }else {
+                log.info("token 발급: {}", token);
+                return new ResponseEntity<>(token, HttpStatus.OK);
+            } else {
                 log.info("이미 등록된 회원");
                 if (!userIdService.getUserId(email).get().getFireBaseToken().equals(loginDto.getFirebaseToken())) { //파이어베이스 토큰 다르면 업데이트
                     log.info("firebaseToken Update");
@@ -91,20 +86,20 @@ public class AndroidController {
                 User createUser = new User(email, "", Collections.singleton(simpleGrantedAuthority));
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(createUser, loginDto.getAccessToken(), Collections.singleton(simpleGrantedAuthority));
                 String token = tokenProvider.createToken(usernamePasswordAuthenticationToken);
-                log.info("token 발급: {}",token);
-                return new ResponseEntity<>(token,HttpStatus.OK);
+                log.info("token 발급: {}", token);
+                return new ResponseEntity<>(token, HttpStatus.OK);
             }
         } catch (HttpClientErrorException e) {
-            log.error("access token err : {}",e.getMessage());
+            log.error("access token err : {}", e.getMessage());
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/update/deviceid")
     ResponseEntity<String> updateDeviceId(@RequestBody UpdateDeviceId updateDeviceId) {
-        log.info("updateDeviceId.toString() : {}",updateDeviceId.toString());
+        log.info("updateDeviceId.toString() : {}", updateDeviceId.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("authentication.getName() : {}",authentication.getName());
+        log.info("authentication.getName() : {}", authentication.getName());
         String email = authentication.getName();
 
         if (!userDeviceService.isPresentMatchedEmailWithDeviceId(email, updateDeviceId.getDeviceId())) {
@@ -121,17 +116,18 @@ public class AndroidController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/setFeedTime")//회원 체크 후 먹이시간 세팅값 받는 거
-    ResponseEntity<String> receiveFeedTime(@RequestBody FeedTimeDto feedTimeDto) {
-        log.info("feedTimeDto.toString() : {}",feedTimeDto.toString());
+    @PostMapping("/setFeedTime")
+    ResponseEntity<String> receiveFeedTime(@RequestBody FeedTimeDto feedTimeDto) {//회원 체크 후 먹이시간 세팅값 받는 거
+        log.info("feedTimeDto.toString() : {}", feedTimeDto.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
-        log.info("authentication.getName() : {}",authentication.getName());
+        log.info("authentication.getName() : {}", authentication.getName());
         if (!userDeviceService.isMatchedEmailWithDeviceId(userEmail, feedTimeDto.getDeviceId())) { //사용자 email과 전달받은 devicId가 연결되어있지 않으면
             return new ResponseEntity<>("{msg : 등록되지 않은 deviceid입니다.}", HttpStatus.BAD_REQUEST);
         }
 
-        if (userSetService.getUserSet(feedTimeDto.getDeviceId()).isEmpty()) { //userSet이 저장되어 있지 않으면 일단 널로 저장
+
+        if (userSetService.getUserSet(deviceIdService.getDeviceId(feedTimeDto.getDeviceId()).get()).isEmpty()) { //userSet이 저장되어 있지 않으면 일단 널로 저장
             log.info("userSet 테이블이 없어 빈 테이블을 생성합니다.");
             UserSet build = UserSet.builder().deviceId(DeviceId.builder().id(feedTimeDto.getDeviceId()).build())
                     .userSetPh(null)
@@ -145,61 +141,101 @@ public class AndroidController {
 
         log.info("{}이 먹이시간 설정 메서드 호출", userEmail);
         if (feedTimeDto.getFirstTime() != null && feedTimeDto.getNumberOfFirstFeedings() != null) {
-            userSetFoodTimeService.setFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getFirstTime(), feedTimeDto.getNumberOfFirstFeedings());
+            userSetFoodTimeService.setFirstFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getFirstTime(), feedTimeDto.getNumberOfFirstFeedings());
         }
         if (feedTimeDto.getSecondTime() != null && feedTimeDto.getNumberOfSecondFeedings() != null) {
-            userSetFoodTimeService.setFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getSecondTime(), feedTimeDto.getNumberOfSecondFeedings());
+            userSetFoodTimeService.setSecondFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getSecondTime(), feedTimeDto.getNumberOfSecondFeedings());
         }
         if (feedTimeDto.getThirdTime() != null && feedTimeDto.getNumberOfThirdFeedings() != null) {
-            userSetFoodTimeService.setFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getThirdTime(), feedTimeDto.getNumberOfThirdFeedings());
+            userSetFoodTimeService.setThirdFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getThirdTime(), feedTimeDto.getNumberOfThirdFeedings());
         }
 
         return new ResponseEntity<>("먹이 지급 설정이 완료되었습니다.", HttpStatus.OK);
     }
 
     @PostMapping("/setUserSet")
-        //온도 탁도 ph 블라블라 묶어서 세팅값 받는 거
-    ResponseEntity<String> setUserSet(@RequestBody UserSetDTO userSetDTO) {
-        log.info("userSetDTO.toString() : {}",userSetDTO.toString());
-        log.info("SecurityContextHolder.getContext().getAuthentication().getName() : {}",SecurityContextHolder.getContext().getAuthentication().getName());
-        Optional<DeviceId> deviceId = deviceIdService.getDeviceId(userSetDTO.getDeviceId());
-        UserSet build = UserSet.builder().userSetTemperature(userSetDTO.getTemperature())
-                .userSetTurbidity(userSetDTO.getTurbidity())
-                .userSetWaterLevel(userSetDTO.getWaterLevel())
-                .userSetPh(userSetDTO.getPh())
-                .deviceId(deviceId.get())
-                .build();
-        userSetService.saveUserSet(build);
-        return new ResponseEntity<>("사용자가 설정한 수치가 등록되었습니다.", HttpStatus.OK);
+    ResponseEntity<String> setUserSet(@RequestBody UserSetDTO userSetDTO) { //온도 탁도 ph 블라블라 묶어서 세팅값 받는 거//디비에 컬럼이 추가되는 오류,컬럼 값 변경으로 수정 요망
+        log.info("userSetDTO.toString() : {}", userSetDTO.toString());
+        log.info("SecurityContextHolder.getContext().getAuthentication().getName() : {}", SecurityContextHolder.getContext().getAuthentication().getName());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<UserId> userId = userIdService.getUserId(authentication.getName());
+
+
+        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
+
+        Optional<UserSet> userSet = userSetService.getUserSet(userDeviceByUserId.get().getDeviceId());
+        if (userSet.isEmpty()) {
+            log.info("사용자 설정 값 새로 등록");
+            UserSet build = UserSet.builder().userSetTemperature(userSetDTO.getTemperature())
+                    .userSetTurbidity(userSetDTO.getTurbidity())
+                    .userSetWaterLevel(userSetDTO.getWaterLevel())
+                    .userSetPh(userSetDTO.getPh())
+                    .deviceId(userDeviceByUserId.get().getDeviceId())
+                    .build();
+            userSetService.saveUserSet(build);
+            return new ResponseEntity<>("사용자가 설정한 수치가 등록되었습니다.", HttpStatus.OK);
+        }else {
+            log.info("사용자 설정 변경");
+            userSet.get().setUserSetPh(userSetDTO.getPh());
+            userSet.get().setUserSetTemperature(userSetDTO.getTemperature());
+            userSet.get().setUserSetTurbidity(userSetDTO.getTurbidity());
+            userSet.get().setUserSetWaterLevel(userSetDTO.getWaterLevel());
+            userSetService.saveUserSet(userSet.get());
+            return new ResponseEntity<>("사용자가 설정한 수치가 등록되었습니다.", HttpStatus.OK);
+        }
+
+
     }
 
     @PostMapping("/getSensingData")
-        //회원 체크 후 해당 기기의 가장 최근 아두이노 센싱 데이터 리턴 - 묶어서
-    ResponseEntity<ResponseAppSensingDto> getSensingData(@RequestBody GetSensingDto getSensingDto) {
-        log.info("getSensingDto.toString() : {}",getSensingDto.toString());
+    ResponseEntity<ResponseAppSensingDto> getSensingData(@RequestBody GetSensingDto getSensingDto) {//회원 체크 후 해당 기기의 가장 최근 아두이노 센싱 데이터 리턴 - 묶어서
+        log.info("getSensingDto.toString() : {}", getSensingDto.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
-        log.info("authentication.getName() : {}",authentication.getName());
+        log.info("authentication.getName() : {}", authentication.getName());
         if (!userDeviceService.isMatchedEmailWithDeviceId(userEmail, getSensingDto.getDeviceId())) { //사용자 email과 전달받은 devicId가 연결되어있지 않으면
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<Sensing> sensingData = sensingService.getSensingData(getSensingDto.getDeviceId());
-        ResponseAppSensingDto build = ResponseAppSensingDto.builder().measuredTemperature(sensingData.get().getMeasuredTemperature())
-                .measuredPh(sensingData.get().getMeasuredPh())
-                .measuredTurbidity(sensingData.get().getMeasuredTurbidity())
-                .measuredWaterLevel(sensingData.get().getMeasuredWaterLevel())
-                .build();
-        return new ResponseEntity<>(build, HttpStatus.OK);
+
+        if (sensingService.getSensingData(getSensingDto.getDeviceId()).isPresent()) {
+            Optional<Sensing> sensingData = sensingService.getSensingData(getSensingDto.getDeviceId());
+            ResponseAppSensingDto build = ResponseAppSensingDto.builder().measuredTemperature(sensingData.get().getMeasuredTemperature())
+                    .measuredPh(sensingData.get().getMeasuredPh())
+                    .measuredTurbidity(sensingData.get().getMeasuredTurbidity())
+                    .measuredWaterLevel(sensingData.get().getMeasuredWaterLevel())
+                    .build();
+            log.info("센싱 데이터 리턴");
+            return new ResponseEntity<>(build, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/signout") //탈퇴
-    ResponseEntity<String> signOut(@RequestBody SignOutDto signOutDto) {
-        log.info(signOutDto.toString());
-        log.info(SecurityContextHolder.getContext().getAuthentication().getName());
-        return new ResponseEntity<>("탈퇴되었습니다",HttpStatus.OK);
+    @GetMapping ("/signout")
+    ResponseEntity<String> signOut() {//탈퇴
+        log.info("탈퇴 로직 실행");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Optional<UserId> userId = userIdService.getUserId(email);
+        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
+        DeviceId deviceId = userDeviceByUserId.get().getDeviceId();
+        userSetFoodTimeService.deleteFoodTimeAndCnt(deviceId.getId()); //먹이 배급 테이블 삭제
+
+        Optional<UserSet> userSet = userSetService.getUserSet(deviceId);
+        userSetService.deleteUserSet(userSet.get()); //userset삭제
+
+        Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(deviceId);
+        userDeviceService.deleteUserDevice(userDeviceByDeviceId.get()); //userdevice 삭제
+
+        userIdService.deleteUser(userId.get()); //userId 삭제
+        return new ResponseEntity<>("탈퇴되었습니다", HttpStatus.OK);
     }
 
-
-
-
+    @GetMapping("/test")
+    ResponseEntity<String> test() {
+        String email = "jw1010110@naver.com";
+        Optional<UserId> userId = userIdService.getUserId(email);
+        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

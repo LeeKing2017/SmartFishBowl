@@ -4,6 +4,7 @@ import com.gachon.fishbowl.entity.DeviceId;
 import com.gachon.fishbowl.entity.UserDevice;
 import com.gachon.fishbowl.entity.UserId;
 import com.gachon.fishbowl.entity.role.Role;
+import com.gachon.fishbowl.repository.DeviceIdRepository;
 import com.gachon.fishbowl.repository.UserDeviceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,23 +22,20 @@ import java.util.Optional;
 class FishbowlApplicationTests {
 	@Autowired
 	private UserDeviceRepository userDeviceRepository;
+	@Autowired
+	private DeviceIdRepository deviceIdRepository;
 
-//	@Test
-//	void contextLoads() {
-//		String email = "jw1010110@naver.com";
-//		Long deviceId = 123L;
-//
-//		DeviceId build = DeviceId.builder().id(deviceId).build();
-//
-//		Optional<List<UserDevice>> allByDeviceId = userDeviceRepository.findAllByDeviceId(build);
-//
-//		if (allByDeviceId.isPresent()) {
-//			Boolean b = allByDeviceId.get().stream().anyMatch(a -> a.getUserId().getId().equals(email) && a.getDeviceId().getId().equals(deviceId));
-//			log.info(b.toString());
-//		} else {
-//			log.info("값 없음");
-//		}
-//
-//	}
+	@Test
+	void contextLoads() {
+		Long deviceId = 123L;
+		String email = "jw1010110@naver.com";
+		Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
+		log.info(byId.toString());
+		log.info((userDeviceRepository.findByDeviceId(byId.get()).toString()));
+		log.info(":asdf{}",userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().toString());
+		Boolean equals = userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().getId().equals(email);
+		log.info(equals.toString());
+
+	}
 
 }
