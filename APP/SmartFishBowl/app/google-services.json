@@ -1,0 +1,92 @@
+{
+  "project_info": {
+    "project_number": "607680018436",
+    "project_id": "webdb-368205",
+    "storage_bucket": "webdb-368205.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607680018436:android:1220f0459a75f84102dd51",
+        "android_client_info": {
+          "package_name": "com.example.smartfishbowl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607680018436-152e8ntm6sgjjebl8vfui49tpppk2uuv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartfishbowl",
+            "certificate_hash": "ad312d8d9caabcd17aaa4538e11b323fb61fe981"
+          }
+        },
+        {
+          "client_id": "607680018436-vh9n8arb3hnje3nt7pokp97d3seaphlj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartfishbowl",
+            "certificate_hash": "d97a3e77e62d0353fc076ff307b73ebb04c098c4"
+          }
+        },
+        {
+          "client_id": "607680018436-o42518i3i26ghp88h92mbabf0371a79m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOK_Q0ImTM529mQIB5BQddzJTryKiZAYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607680018436-8eo1cp3eeav4nj9fjfj1u869sqeblv5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607680018436:android:481f58b64ff315d102dd51",
+        "android_client_info": {
+          "package_name": "com.jinyeob.mylogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607680018436-n0e759c34cgn4gjmqdtj9uvo4kdl714d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jinyeob.mylogin",
+            "certificate_hash": "ad312d8d9caabcd17aaa4538e11b323fb61fe981"
+          }
+        },
+        {
+          "client_id": "607680018436-o42518i3i26ghp88h92mbabf0371a79m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOK_Q0ImTM529mQIB5BQddzJTryKiZAYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607680018436-8eo1cp3eeav4nj9fjfj1u869sqeblv5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
