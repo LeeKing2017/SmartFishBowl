@@ -109,4 +109,9 @@ class ChangeActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, MenuActivity::class.java)
+        startActivity(intent)
+    }
 }

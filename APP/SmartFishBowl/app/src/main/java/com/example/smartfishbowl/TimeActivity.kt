@@ -225,12 +225,9 @@ class TimeActivity : AppCompatActivity() {
         val firstTime: String = LocalTime.of(pref.getInt("FirstHour", 0), pref.getInt("FirstMinute", 0),0).toString()
         val secondTime: String = LocalTime.of(pref.getInt("SecondHour", 0), pref.getInt("SecondMinute", 0),0).toString()
         val thirdTime: String = LocalTime.of(pref.getInt("ThirdHour", 0), pref.getInt("ThirdMinute", 0),0).toString()
-//        val firstTime: LocalTime = LocalTime.of(pref.getInt("FirstHour", 0), pref.getInt("FirstMinute", 0),0)
-//        val secondTime: LocalTime = LocalTime.of(pref.getInt("SecondHour", 0), pref.getInt("SecondMinute", 0),0)
-//        val thirdTime: LocalTime = LocalTime.of(pref.getInt("ThirdHour", 0), pref.getInt("ThirdMinute", 0),0)
-        Log.d("FirstTime", firstTime.toString())
-        Log.d("SecondTime", secondTime.toString())
-        Log.d("ThirdTime", thirdTime.toString())
+        Log.d("FirstTime", firstTime)
+        Log.d("SecondTime", secondTime)
+        Log.d("ThirdTime", thirdTime)
         val foodSetting = FoodSetting(pref.getString("CurrentDevice", "0").toLong(), firstTime, secondTime, thirdTime, pref.getInt("FirstTotal", 0), pref.getInt("SecondTotal", 0), pref.getInt("ThirdTotal", 0))
         Log.d("FoodSetting", foodSetting.toString())
         apis.setTime("Bearer " + pref.getString("JWT", "error"), foodSetting).enqueue(object : Callback<String>{
@@ -240,6 +237,6 @@ class TimeActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     Log.d("TimeResponse", t.message.toString())
                 }
-            })
+        })
     }
 }
