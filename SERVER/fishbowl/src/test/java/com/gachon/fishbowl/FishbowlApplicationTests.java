@@ -25,17 +25,17 @@ class FishbowlApplicationTests {
 	@Autowired
 	private DeviceIdRepository deviceIdRepository;
 
-	@Test
-	void contextLoads() {
-		Long deviceId = 123L;
-		String email = "jw1010110@naver.com";
-		Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
-		log.info(byId.toString());
-		log.info((userDeviceRepository.findByDeviceId(byId.get()).toString()));
-		log.info(":asdf{}",userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().toString());
-		Boolean equals = userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().getId().equals(email);
-		log.info(equals.toString());
-
-	}
+//	@Test
+//	void contextLoads() {
+//		Long deviceId = 123L;
+//		String email = "jw1010110@naver.com";
+//		Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
+//		log.info(byId.toString());
+//		log.info((userDeviceRepository.findByDeviceId(byId.get()).toString()));
+//		log.info(":asdf{}",userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().toString());
+//		Boolean equals = userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().getId().equals(email);
+//		log.info(equals.toString());
+//
+//	}
 
 }
