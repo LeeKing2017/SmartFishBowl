@@ -69,7 +69,6 @@ class LoginActivity : AppCompatActivity() {
             val prefs = PreferencesUtil(applicationContext)
             if (task.isSuccessful) {
                 Log.d("FirebaseToken", task.result)
-                binding.tokenValue.setText(task.result)
                 prefs.setString("FirebaseToken", task.result)
             }else{
                 Toast.makeText(applicationContext, "FirebaseToken is unavailable", Toast.LENGTH_SHORT).show()
