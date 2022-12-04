@@ -8,6 +8,7 @@ import com.gachon.fishbowl.repository.DeviceIdRepository;
 import com.gachon.fishbowl.repository.UserDeviceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,17 +26,13 @@ class FishbowlApplicationTests {
 	@Autowired
 	private DeviceIdRepository deviceIdRepository;
 
-//	@Test
-//	void contextLoads() {
-//		Long deviceId = 123L;
-//		String email = "jw1010110@naver.com";
-//		Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
-//		log.info(byId.toString());
-//		log.info((userDeviceRepository.findByDeviceId(byId.get()).toString()));
-//		log.info(":asdf{}",userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().toString());
-//		Boolean equals = userDeviceRepository.findByDeviceId(byId.get()).get().getUserId().getId().equals(email);
-//		log.info(equals.toString());
-//
-//	}
+	@Test
+	void contextLoads() {
+		Optional<DeviceId> byId1 = deviceIdRepository.findById(123L);
+		if (byId1.isPresent()) {
+
+		}
+
+	}
 
 }
