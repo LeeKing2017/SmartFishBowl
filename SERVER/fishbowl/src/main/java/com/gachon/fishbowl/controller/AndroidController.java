@@ -102,18 +102,22 @@ public class AndroidController {
         log.info("authentication.getName() : {}", authentication.getName());
         String email = authentication.getName();
 
-        if (!userDeviceService.isPresentMatchedEmailWithDeviceId(email, updateDeviceId.getDeviceId())) {
-            log.info("저장");
+        if (!userDeviceService.isPresentMatchedEmailWithDeviceId(email, updateDeviceId.getDeviceId())
+                && userDeviceService.getUserDeviceByDeviceId(deviceIdService.getDeviceId(updateDeviceId.getDeviceId()).get()).isEmpty()) {
+            log.info("기기와 회원 정보 메핑 후 저장");
             Optional<UserId> userId = userIdService.getUserId(email);
             Optional<DeviceId> deviceId = deviceIdService.getDeviceId(updateDeviceId.getDeviceId());
             UserDevice build = UserDevice.builder().deviceId(deviceId.get())
                     .userId(userId.get())
                     .build();
             userDeviceService.saveUserDevice(build);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
 
-        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @PostMapping("/setFeedTime")
