@@ -47,24 +47,49 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         if(byDeviceId.isPresent()) {
             Optional<UserSetFoodTime> byUserSet = userSetFoodTimeRepository.findByUserSet(byDeviceId.get());
             HashMap<String, String> stringStringHashMap = new HashMap<>();
+            //temperature 보내기
             if(byDeviceId.get().getUserSetTemperature() != null) {
                 stringStringHashMap.put("temperature", byDeviceId.get().getUserSetTemperature().toString());
             }
-            if(byUserSet.get().getNumberOfFirstFeedings() != null) {
-                stringStringHashMap.put("firstTime", byUserSet.get().getFirstTime().toString());
-                stringStringHashMap.put("numberOfFirstFeedings", byUserSet.get().getNumberOfFirstFeedings().toString());
+            else {
+                stringStringHashMap.put("temperature", "");
             }
-            if (byUserSet.get().getNumberOfSecondFeedings() != null) {
-                stringStringHashMap.put("secondTime", byUserSet.get().getSecondTime().toString());
-                stringStringHashMap.put("numberOfSecondFeedings", byUserSet.get().getNumberOfSecondFeedings().toString());
+            //첫번째 먹이 시간/횟수 보내기
+            if (byUserSet.isPresent()) {
+                if (byUserSet.get().getNumberOfFirstFeedings() != null) {
+                    stringStringHashMap.put("firstTime", byUserSet.get().getFirstTime().toString());
+                    stringStringHashMap.put("numberOfFirstFeedings", byUserSet.get().getNumberOfFirstFeedings().toString());
+                } else {
+                    stringStringHashMap.put("firstTime", "");
+                    stringStringHashMap.put("numberOfFirstFeedings", "");
+                }
+                //두번째 먹이 시간/횟수 보내기
+                if (byUserSet.get().getNumberOfSecondFeedings() != null) {
+                    stringStringHashMap.put("secondTime", byUserSet.get().getSecondTime().toString());
+                    stringStringHashMap.put("numberOfSecondFeedings", byUserSet.get().getNumberOfSecondFeedings().toString());
+                } else {
+                    stringStringHashMap.put("secondTime", "");
+                    stringStringHashMap.put("numberOfSecondFeedings", "");
+                }
+                //세번째 먹이 시간/횟수 보내기
+                if (byUserSet.get().getNumberOfThirdFeedings() != null) {
+                    stringStringHashMap.put("thirdTime", byUserSet.get().getThirdTime().toString());
+                    stringStringHashMap.put("numberOfThirdFeedings", byUserSet.get().getNumberOfThirdFeedings().toString());
+                } else {
+                    stringStringHashMap.put("thirdTime", "");
+                    stringStringHashMap.put("numberOfThirdFeedings", "");
+                }
             }
-            if (byUserSet.get().getNumberOfThirdFeedings() != null) {
-                stringStringHashMap.put("thirdTime", byUserSet.get().getThirdTime().toString());
-                stringStringHashMap.put("numberOfThirdFeedings", byUserSet.get().getNumberOfThirdFeedings().toString());
+            else{
+                stringStringHashMap.put("firstTime", "");
+                stringStringHashMap.put("numberOfFirstFeedings", "");
+                stringStringHashMap.put("secondTime", "");
+                stringStringHashMap.put("numberOfSecondFeedings", "");
+                stringStringHashMap.put("thirdTime", "");
+                stringStringHashMap.put("numberOfThirdFeedings", "");
             }
-            if (!stringStringHashMap.isEmpty()) {
-                session.sendMessage(new TextMessage(stringStringHashMap.toString()));
-            }
+            //userSet 데이터 소켓으로 보내기
+            session.sendMessage(new TextMessage(stringStringHashMap.toString()));
         }
     }
 
