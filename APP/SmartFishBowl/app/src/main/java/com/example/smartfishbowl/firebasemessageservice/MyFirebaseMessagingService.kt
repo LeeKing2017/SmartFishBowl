@@ -9,6 +9,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -19,10 +20,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 
-const val channelId = "notification_channel"
 const val channelName = "com.example.smartfishbowl"
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class MyFirebaseMessagingService: FirebaseMessagingService() {
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onMessageReceived(message: RemoteMessage) {
         generateNotification(message.notification?.title.toString(), message.notification?.body.toString())
         Log.d(TAG, "From: ${message.from}")
@@ -44,14 +45,15 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         private const val TAG="MyFirebaseMsgService"
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("UnspecifiedImmutableFlag")
     fun generateNotification(title: String, message: String){
         val intent = Intent(this, LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(this, (System.currentTimeMillis()).toInt(), intent, PendingIntent.FLAG_MUTABLE)
 
-        val notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
+        val notificationBuilder = NotificationCompat.Builder(applicationContext, System.currentTimeMillis().toString())
             .setSmallIcon(R.drawable.main_logo)
             .setAutoCancel(true)
             .setContentTitle(title)
@@ -65,11 +67,11 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(System.currentTimeMillis().toString(), channelName, NotificationManager.IMPORTANCE_HIGH)
 
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
 }
