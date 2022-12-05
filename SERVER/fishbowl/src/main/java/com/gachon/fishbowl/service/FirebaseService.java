@@ -15,7 +15,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 온도") // 알림 제목
                                 .setBody(deviceId+"어항의 현재 온도가 "+temperature+"도입니다. 발열 패드를 작동시켰습니다.") // 알림 본문
                                 .build())
                         .build())
@@ -36,7 +36,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 온도") // 알림 제목
                                 .setBody(deviceId+"어항의 현재 온도가 "+temperature+"도입니다. 쿨러를 작동시켰습니다.") // 알림 본문
                                 .build())
                         .build())
@@ -57,7 +57,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 수위") // 알림 제목
                                 .setBody(deviceId+"어항의 현재 물 수위가 설정한 물 수위보다 낮은 "+WaterLevel+"입니다. 물을 채워주세요") // 알림 본문
                                 .build())
                         .build())
@@ -78,7 +78,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 ph") // 알림 제목
                                 .setBody(deviceId+"어항의 현재 Ph값이 설정값보다 낮은 "+Ph+"입니다.") // 알림 본문
                                 .build())
                         .build())
@@ -99,7 +99,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 ph") // 알림 제목
                                 .setBody(deviceId+"어항의 현재 Ph값이 설정 값보다 높은"+Ph+"입니다.") // 알림 본문
                                 .build())
                         .build())
@@ -119,7 +119,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 탁도") // 알림 제목
                                 .setBody(deviceId+"어항의 현재 탁도가 "+Turbidity+"로 물이 더럽습니다. 물을 갈아주세요") // 알림 본문
                                 .build())
                         .build())
@@ -140,7 +140,7 @@ public class FirebaseService {
                         .setRestrictedPackageName("com.example.smartfishbowl") // 애플리케이션 패키지 이름
                         .setDirectBootOk(true)
                         .setNotification(AndroidNotification.builder()
-                                .setTitle("뽀끔뽀끔") // 알림 제목
+                                .setTitle("뽀끔뽀끔 먹이") // 알림 제목
                                 .setBody(deviceId+"어항의 먹이가 부족합니다. 먹이를 채워주세요") // 알림 본문
                                 .build())
                         .build())
