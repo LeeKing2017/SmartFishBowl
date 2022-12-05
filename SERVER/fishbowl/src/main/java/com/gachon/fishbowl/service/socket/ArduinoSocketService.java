@@ -182,8 +182,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     public Boolean isSensingTemperatureLow(Double temperature, Double dbTemperature, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        dbTemperature = (double) Math.round(dbTemperature);
-        Double dtoTemperature = (double) Math.round(temperature);
+        dbTemperature = (double) (Math.round(dbTemperature* 100)/10)*0.1;
+        Double dtoTemperature = (double) (Math.round(temperature* 100)/10)*0.1;
         if(byDeviceId.isPresent() && byDeviceId.get().getUserSetTemperature() != null) {
             if (dbTemperature.compareTo(dtoTemperature) == 0) {
                 log.info("DB 센싱 : {}", dbTemperature);
@@ -206,8 +206,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     public Boolean isSensingTemperatureHigh(Double temperature, Double dbTemperature, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        dbTemperature = (double) Math.round(dbTemperature);
-        Double dtoTemperature = (double) Math.round(temperature);
+        dbTemperature = (double) (Math.round(dbTemperature* 100)/10)*0.1;
+        Double dtoTemperature = (double) (Math.round(temperature* 100)/10)*0.1;
         if(byDeviceId.isPresent() && byDeviceId.get().getUserSetTemperature() != null) {
             if (dbTemperature.compareTo(dtoTemperature) == 0) {
                 log.info("DB 센싱 : {}", dbTemperature);
@@ -256,8 +256,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     public Boolean isSensingPhLow(Double ph, Double dbPh, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        dbPh = (double) (Math.round(dbPh * 10) / 10);
-        Double dtoPh = (double) (Math.round(ph * 10) / 10);
+        dbPh = (double) (Math.round(dbPh * 100)/10)*0.1;
+        Double dtoPh = (double) (Math.round(ph * 100)/10)*0.1;
         if(byDeviceId.isPresent() && byDeviceId.get().getUserSetPh() != null) {
             if (dbPh.compareTo(dtoPh) == 0) {
                 log.info("DB 센싱 : {}", dbPh);
@@ -280,8 +280,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     public Boolean isSensingPhHigh(Double ph, Double dbPh, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        dbPh = (double) (Math.round(dbPh * 10) / 10);
-        Double dtoPh = (double) (Math.round(ph * 10) / 10);
+        dbPh = (double) (Math.round(dbPh * 100)/10)*0.1;
+        Double dtoPh = (double) (Math.round(ph * 100)/10)*0.1;
         if (byDeviceId.isPresent() && byDeviceId.get().getUserSetPh() != null){
             if (dbPh.compareTo(dtoPh) == 0){
                 log.info("DB 센싱 : {}", dbPh);
@@ -304,8 +304,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     public Boolean isSensingTurbidity(Double turbidity, Double dbTurbidity, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        dbTurbidity = (double) (Math.round(dbTurbidity * 10) / 10);
-        Double dtoTurbidity = (double) (Math.round(turbidity * 10) / 10);
+        dbTurbidity = (double) (Math.round(dbTurbidity * 100)/10)*0.1;
+        Double dtoTurbidity = (double) (Math.round(turbidity * 100)/10)*0.1;
         if (byDeviceId.isPresent() && byDeviceId.get().getUserSetTurbidity() != null){
             if (dbTurbidity.compareTo(dtoTurbidity) == 0){
                 log.info("DB 센싱 : {}", dbTurbidity);

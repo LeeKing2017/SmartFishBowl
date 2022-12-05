@@ -113,6 +113,7 @@ public class AndroidController {
             userDeviceService.saveUserDevice(build);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
+            log.info("이미 사용중인 기기입니다");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
