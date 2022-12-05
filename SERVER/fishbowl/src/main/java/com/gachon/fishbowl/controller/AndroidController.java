@@ -238,4 +238,6 @@ public class AndroidController {
         Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }

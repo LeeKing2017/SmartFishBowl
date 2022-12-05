@@ -150,24 +150,31 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         //푸쉬 알림 보내기
         if (isSensingTemperatureLow(temperature,dbTemperature, deviceId)){
             firebaseService.sendTemperatureLowMessage(firebaseToken,temperature,deviceId);
+            log.info("온도가 높음");
         }
         if (isSensingTemperatureHigh(temperature,dbTemperature, deviceId)){
             firebaseService.sendTemperatureHighMessage(firebaseToken,temperature,deviceId);
+            log.info("온도가 낮음");
         }
         if (isSensingWaterLevelLow(waterLevel,dbWaterLevel, deviceId)){
             firebaseService.sendWaterLevelLowMessage(firebaseToken,waterLevel,deviceId);
+            log.info("물 수위가 낮아짐");
         }
         if (isSensingPhLow(ph,dbPh, deviceId)){
             firebaseService.sendPhLowMessage(firebaseToken,ph,deviceId);
+            log.info("ph가 낮아짐");
         }
         if (isSensingPhHigh(ph,dbPh, deviceId)){
             firebaseService.sendPhHighMessage(firebaseToken,ph,deviceId);
+            log.info("ph가 높아짐");
         }
         if (isSensingTurbidity(turbidity, dbTurbidity, deviceId)){
             firebaseService.sendTurbidityMessage(firebaseToken,turbidity,deviceId);
+            log.info("탁도가 높음");
         }
         if (isSensingLeftovers(checkLeftovers)){
             firebaseService.sendLeftoversMessage(firebaseToken,deviceId);
+            log.info("먹이 부족");
         }
         return "OK";
     }
