@@ -115,11 +115,14 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         log.info("탁도 : {}",turbidity);
         log.info("ph : {}",ph);
         log.info("deviceId :  {}",deviceId);
-        Double dbTemperature = 0.0;
-        Integer dbWaterLevel = 0;
-        Double dbTurbidity = 0.0;
-        Double dbPh = 0.0;
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
+        Optional<UserSet> byDeviceId1 = userSetRepository.findByDeviceId(byId.get());
+
+        Double userSetTemperature = byDeviceId1.get().getUserSetTemperature();
+        Integer userSetWaterLevel = byDeviceId1.get().getUserSetWaterLevel();
+        Double userSetTurbidity = byDeviceId1.get().getUserSetTurbidity();
+        Double userSetPh = byDeviceId1.get().getUserSetPh();
+
         Sensing sensing = Sensing.builder()
                 .measuredTemperature(temperature)
                 .measuredWaterLevel(waterLevel)
@@ -128,12 +131,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
                 .deviceId(byId.get()).build();
 
         if(checkLeftovers.isEmpty()){
-            if(!sensingRepository.findByDeviceId(byId.get()).isEmpty()){
+            if(sensingRepository.findByDeviceId(byId.get()).isPresent()){
                 Optional<Sensing> byDeviceId = sensingRepository.findByDeviceId(byId.get());
-                dbTemperature = byDeviceId.get().getMeasuredTemperature();
-                dbWaterLevel = byDeviceId.get().getMeasuredWaterLevel();
-                dbTurbidity = byDeviceId.get().getMeasuredTurbidity();
-                dbPh = byDeviceId.get().getMeasuredPh();
                 byDeviceId.get().setMeasuredTemperature(temperature);
                 byDeviceId.get().setMeasuredWaterLevel(waterLevel);
                 byDeviceId.get().setMeasuredPh(ph);
@@ -148,27 +147,27 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Optional<UserDevice> tokenByDeviceId = userDeviceRepository.findByDeviceId(sensingDeviceId);
         String firebaseToken = tokenByDeviceId.get().getUserId().getFireBaseToken();
         //푸쉬 알림 보내기
-        if (isSensingTemperatureLow(temperature,dbTemperature, deviceId)){
+        if (isSensingTemperatureLow(temperature,userSetTemperature, deviceId)){
             firebaseService.sendTemperatureLowMessage(firebaseToken,temperature,deviceId);
             log.info("온도가 높음");
         }
-        if (isSensingTemperatureHigh(temperature,dbTemperature, deviceId)){
+        if (isSensingTemperatureHigh(temperature,userSetTemperature, deviceId)){
             firebaseService.sendTemperatureHighMessage(firebaseToken,temperature,deviceId);
             log.info("온도가 낮음");
         }
-        if (isSensingWaterLevelLow(waterLevel,dbWaterLevel, deviceId)){
+        if (isSensingWaterLevelLow(waterLevel,userSetWaterLevel, deviceId)){
             firebaseService.sendWaterLevelLowMessage(firebaseToken,waterLevel,deviceId);
             log.info("물 수위가 낮아짐");
         }
-        if (isSensingPhLow(ph,dbPh, deviceId)){
+        if (isSensingPhLow(ph,userSetPh, deviceId)){
             firebaseService.sendPhLowMessage(firebaseToken,ph,deviceId);
             log.info("ph가 낮아짐");
         }
-        if (isSensingPhHigh(ph,dbPh, deviceId)){
+        if (isSensingPhHigh(ph,userSetPh, deviceId)){
             firebaseService.sendPhHighMessage(firebaseToken,ph,deviceId);
             log.info("ph가 높아짐");
         }
-        if (isSensingTurbidity(turbidity, dbTurbidity, deviceId)){
+        if (isSensingTurbidity(turbidity, userSetTurbidity, deviceId)){
             firebaseService.sendTurbidityMessage(firebaseToken,turbidity,deviceId);
             log.info("탁도가 높음");
         }
@@ -190,6 +189,7 @@ public class ArduinoSocketService extends TextWebSocketHandler {
                 log.info("DB 센싱 : {}", dbTemperature);
                 log.info("DTO 센싱 : {}", dtoTemperature);
                 log.info("== 결과 : {}", (dbTemperature.compareTo(dtoTemperature) == 0));
+                log.info("센싱과 설정 온도가 같음 낮");
                 return false;
             }
 
@@ -213,6 +213,7 @@ public class ArduinoSocketService extends TextWebSocketHandler {
                 log.info("DB 센싱 : {}", dbTemperature);
                 log.info("DTO 센싱 : {}", dtoTemperature);
                 log.info("== 결과 : {}", (dbTemperature.compareTo(dtoTemperature) == 0));
+                log.info("센싱과 설정 온도가 같음 높");
                 return false;
             }
 
@@ -234,6 +235,10 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Integer dtoWaterLevel = waterLevel / 100;
         if(byDeviceId.isPresent() && byDeviceId.get().getUserSetWaterLevel() != null) {
             if (dbWaterLevel.equals(dtoWaterLevel)) {
+                log.info("DB 센싱 : {}", dbWaterLevel);
+                log.info("DTO 센싱 : {}", dtoWaterLevel);
+                log.info("== 결과 : {}", (dbWaterLevel.compareTo(dtoWaterLevel) == 0));
+                log.info("센싱과 설정 수위가 같음");
                 return false;
             }
 
@@ -255,6 +260,10 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Double dtoPh = (double) (Math.round(ph * 10) / 10);
         if(byDeviceId.isPresent() && byDeviceId.get().getUserSetPh() != null) {
             if (dbPh.compareTo(dtoPh) == 0) {
+                log.info("DB 센싱 : {}", dbPh);
+                log.info("DTO 센싱 : {}", dtoPh);
+                log.info("== 결과 : {}", (dbPh.compareTo(dtoPh) == 0));
+                log.info("센싱과 설정 ph가 같음 낮");
                 return false;
             }
             if (byDeviceId.get().getUserSetPh() > ph) {
@@ -275,6 +284,10 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Double dtoPh = (double) (Math.round(ph * 10) / 10);
         if (byDeviceId.isPresent() && byDeviceId.get().getUserSetPh() != null){
             if (dbPh.compareTo(dtoPh) == 0){
+                log.info("DB 센싱 : {}", dbPh);
+                log.info("DTO 센싱 : {}", dtoPh);
+                log.info("== 결과 : {}", (dbPh.compareTo(dtoPh) == 0));
+                log.info("센싱과 설정 ph가 같음 높");
                 return false;
             }
             if(byDeviceId.get().getUserSetPh() < ph ){
@@ -295,6 +308,10 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Double dtoTurbidity = (double) (Math.round(turbidity * 10) / 10);
         if (byDeviceId.isPresent() && byDeviceId.get().getUserSetTurbidity() != null){
             if (dbTurbidity.compareTo(dtoTurbidity) == 0){
+                log.info("DB 센싱 : {}", dbTurbidity);
+                log.info("DTO 센싱 : {}", dtoTurbidity);
+                log.info("== 결과 : {}", (dbTurbidity.compareTo(dtoTurbidity) == 0));
+                log.info("센싱과 설정 탁도가 같음");
                 return false;
             }
             if (byDeviceId.get().getUserSetTurbidity() < turbidity){
