@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.smartfishbowl.database.BowlData
 import com.example.smartfishbowl.database.BowlDatabase
 
-class BowlViewModel(app: Application) : AndroidViewModel(app) {
+class
+BowlViewModel(app: Application) : AndroidViewModel(app) {
     var allBowls : MutableLiveData<List<BowlData>> = MutableLiveData()
     fun getAllIdsObservers(): MutableLiveData<List<BowlData>> {
         return allBowls

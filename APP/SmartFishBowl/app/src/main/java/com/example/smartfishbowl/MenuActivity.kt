@@ -57,6 +57,10 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         first_time.text = "첫번째 시간: " + pref.getInt("FirstHour", 0) + "시 " + pref.getInt("FirstMinute", 0) + "분, " + pref.getInt("FirstTotal", 0) + "회"
         second_time.text = "두번째 시간: "+pref.getInt("SecondHour", 0) + "시 " + pref.getInt("SecondMinute", 0) + "분, "+ pref.getInt("SecondTotal", 0) + "회"
         third_time.text = "세번째 시간: "+pref.getInt("ThirdHour", 0) + "시 " + pref.getInt("ThirdMinute", 0) + "분, "+ pref.getInt("ThirdTotal", 0) + "회"
+        tmp.text = "희망 온도: ${pref.getString("tmp", "25")} ℃"
+        hgt.text = "희망 수위: ${pref.getString("hgt", "10")} CM"
+        ph.text = "희망 PH: ${pref.getString("ph", "7")}"
+        drt.text = "희망 탁도: ${pref.getString("drt", "1")}"
         Log.d("CURRENTDEVICE", pref.getString("CurrentDevice", "0"))
         val curD = CurrentDevice(pref.getString("CurrentDevice", "0").toLong())
         apis.getValues("Bearer " + pref.getString("JWT", "error"), curD).enqueue(object : Callback<Getting>{
@@ -239,6 +243,10 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         first_time.text = "첫번째 시간: " + pref.getInt("FirstHour", 0) + "시 " + pref.getInt("FirstMinute", 0) + "분, " + pref.getInt("FirstTotal", 0) + "회"
         second_time.text = "두번째 시간: "+pref.getInt("SecondHour", 0) + "시 " + pref.getInt("SecondMinute", 0) + "분, "+ pref.getInt("SecondTotal", 0) + "회"
         third_time.text = "세번째 시간: "+pref.getInt("ThirdHour", 0) + "시 " + pref.getInt("ThirdMinute", 0) + "분, "+ pref.getInt("ThirdTotal", 0) + "회"
+        tmp.text = "희망 온도: ${pref.getString("tmp", "25")} ℃"
+        hgt.text = "희망 수위: ${pref.getString("hgt", "10")} CM"
+        ph.text = "희망 PH: ${pref.getString("ph", "7")}"
+        drt.text = "희망 탁도: ${pref.getString("drt", "1")}"
         val curD = CurrentDevice(pref.getString("CurrentDevice", "0").toLong())
         apis.getValues("Bearer " + pref.getString("JWT", "error"), curD).enqueue(object : Callback<Getting>{
             override fun onResponse(call: Call<Getting>, response: Response<Getting>) {
