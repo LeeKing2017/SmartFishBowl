@@ -39,7 +39,12 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         Double ph = jsonObject.getDouble("ph");
         Long deviceId = jsonObject.getLong("deviceId");
         String checkLeftovers = jsonObject.getString("checkLeftovers");
-        getSensing(temperature,waterLevel,turbidity,ph,deviceId,checkLeftovers);
+        try {
+            getSensing(temperature,waterLevel,turbidity,ph,deviceId,checkLeftovers);
+        }
+        catch (FirebaseMessagingException e){
+            log.info("firebase error");
+        }
 
 
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
@@ -49,44 +54,44 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             HashMap<String, String> stringStringHashMap = new HashMap<>();
             //temperature 보내기
             if(byDeviceId.get().getUserSetTemperature() != null) {
-                stringStringHashMap.put("temperature", byDeviceId.get().getUserSetTemperature().toString());
+                stringStringHashMap.put("\"temperature\"", byDeviceId.get().getUserSetTemperature().toString());
             }
             else {
-                stringStringHashMap.put("temperature", "");
+                stringStringHashMap.put("\"temperature\"", "\"\"");
             }
             //첫번째 먹이 시간/횟수 보내기
             if (byUserSet.isPresent()) {
                 if (byUserSet.get().getNumberOfFirstFeedings() != null) {
-                    stringStringHashMap.put("firstTime", byUserSet.get().getFirstTime().toString());
-                    stringStringHashMap.put("numberOfFirstFeedings", byUserSet.get().getNumberOfFirstFeedings().toString());
+                    stringStringHashMap.put("\"firstTime\"", byUserSet.get().getFirstTime().toString());
+                    stringStringHashMap.put("\"numberOfFirstFeedings\"", byUserSet.get().getNumberOfFirstFeedings().toString());
                 } else {
-                    stringStringHashMap.put("firstTime", "");
-                    stringStringHashMap.put("numberOfFirstFeedings", "");
+                    stringStringHashMap.put("\"firstTime\"", "\"\"");
+                    stringStringHashMap.put("\"numberOfFirstFeedings\"", "\"\"");
                 }
                 //두번째 먹이 시간/횟수 보내기
                 if (byUserSet.get().getNumberOfSecondFeedings() != null) {
-                    stringStringHashMap.put("secondTime", byUserSet.get().getSecondTime().toString());
-                    stringStringHashMap.put("numberOfSecondFeedings", byUserSet.get().getNumberOfSecondFeedings().toString());
+                    stringStringHashMap.put("\"secondTime\"", byUserSet.get().getSecondTime().toString());
+                    stringStringHashMap.put("\"numberOfSecondFeedings\"", byUserSet.get().getNumberOfSecondFeedings().toString());
                 } else {
-                    stringStringHashMap.put("secondTime", "");
-                    stringStringHashMap.put("numberOfSecondFeedings", "");
+                    stringStringHashMap.put("\"secondTime\"", "\"\"");
+                    stringStringHashMap.put("\"numberOfSecondFeedings\"", "\"\"");
                 }
                 //세번째 먹이 시간/횟수 보내기
                 if (byUserSet.get().getNumberOfThirdFeedings() != null) {
-                    stringStringHashMap.put("thirdTime", byUserSet.get().getThirdTime().toString());
-                    stringStringHashMap.put("numberOfThirdFeedings", byUserSet.get().getNumberOfThirdFeedings().toString());
+                    stringStringHashMap.put("\"thirdTime\"", byUserSet.get().getThirdTime().toString());
+                    stringStringHashMap.put("\"numberOfThirdFeedings\"", byUserSet.get().getNumberOfThirdFeedings().toString());
                 } else {
-                    stringStringHashMap.put("thirdTime", "");
-                    stringStringHashMap.put("numberOfThirdFeedings", "");
+                    stringStringHashMap.put("\"thirdTime\"", "\"\"");
+                    stringStringHashMap.put("\"numberOfThirdFeedings\"", "\"\"");
                 }
             }
             else{
-                stringStringHashMap.put("firstTime", "");
-                stringStringHashMap.put("numberOfFirstFeedings", "");
-                stringStringHashMap.put("secondTime", "");
-                stringStringHashMap.put("numberOfSecondFeedings", "");
-                stringStringHashMap.put("thirdTime", "");
-                stringStringHashMap.put("numberOfThirdFeedings", "");
+                stringStringHashMap.put("\"firstTime\"", "\"\"");
+                stringStringHashMap.put("\"numberOfFirstFeedings\"", "\"\"");
+                stringStringHashMap.put("\"secondTime\"", "\"\"");
+                stringStringHashMap.put("\"numberOfSecondFeedings\"", "\"\"");
+                stringStringHashMap.put("\"thirdTime\"", "\"\"");
+                stringStringHashMap.put("\"numberOfThirdFeedings\"", "\"\"");
             }
             //userSet 데이터 소켓으로 보내기
             session.sendMessage(new TextMessage(stringStringHashMap.toString()));
@@ -116,12 +121,7 @@ public class ArduinoSocketService extends TextWebSocketHandler {
         log.info("ph : {}",ph);
         log.info("deviceId :  {}",deviceId);
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
-        Optional<UserSet> byDeviceId1 = userSetRepository.findByDeviceId(byId.get());
 
-        Double userSetTemperature = byDeviceId1.get().getUserSetTemperature();
-        Integer userSetWaterLevel = byDeviceId1.get().getUserSetWaterLevel();
-        Double userSetTurbidity = byDeviceId1.get().getUserSetTurbidity();
-        Double userSetPh = byDeviceId1.get().getUserSetPh();
 
         Sensing sensing = Sensing.builder()
                 .measuredTemperature(temperature)
@@ -144,38 +144,47 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             }
         }
 
-        Optional<UserDevice> tokenByDeviceId = userDeviceRepository.findByDeviceId(sensingDeviceId);
-        String firebaseToken = tokenByDeviceId.get().getUserId().getFireBaseToken();
-        //푸쉬 알림 보내기
-        if (isSensingTemperatureLow(temperature,userSetTemperature, deviceId)){
-            firebaseService.sendTemperatureLowMessage(firebaseToken,temperature,deviceId);
-            log.info("온도가 높음");
-        }
-        if (isSensingTemperatureHigh(temperature,userSetTemperature, deviceId)){
-            firebaseService.sendTemperatureHighMessage(firebaseToken,temperature,deviceId);
-            log.info("온도가 낮음");
-        }
-        if (isSensingWaterLevelLow(waterLevel,userSetWaterLevel, deviceId)){
-            firebaseService.sendWaterLevelLowMessage(firebaseToken,waterLevel,deviceId);
-            log.info("물 수위가 낮아짐");
-        }
-        if (isSensingPhLow(ph,userSetPh, deviceId)){
-            firebaseService.sendPhLowMessage(firebaseToken,ph,deviceId);
-            log.info("ph가 낮아짐");
-        }
-        if (isSensingPhHigh(ph,userSetPh, deviceId)){
-            firebaseService.sendPhHighMessage(firebaseToken,ph,deviceId);
-            log.info("ph가 높아짐");
-        }
-        if (isSensingTurbidity(turbidity, userSetTurbidity, deviceId)){
-            firebaseService.sendTurbidityMessage(firebaseToken,turbidity,deviceId);
-            log.info("탁도가 높음");
-        }
-        if (isSensingLeftovers(checkLeftovers)){
-            firebaseService.sendLeftoversMessage(firebaseToken,deviceId);
-            log.info("먹이 부족");
+        Optional<UserSet> byDeviceId1 = userSetRepository.findByDeviceId(byId.get());
+        if (byDeviceId1.isPresent()) {
+            Double userSetTemperature = byDeviceId1.get().getUserSetTemperature();
+            Integer userSetWaterLevel = byDeviceId1.get().getUserSetWaterLevel();
+            Double userSetTurbidity = byDeviceId1.get().getUserSetTurbidity();
+            Double userSetPh = byDeviceId1.get().getUserSetPh();
+
+            Optional<UserDevice> tokenByDeviceId = userDeviceRepository.findByDeviceId(sensingDeviceId);
+            String firebaseToken = tokenByDeviceId.get().getUserId().getFireBaseToken();
+            //푸쉬 알림 보내기
+            if (isSensingTemperatureLow(temperature, userSetTemperature, deviceId)) {
+                firebaseService.sendTemperatureLowMessage(firebaseToken, temperature, deviceId);
+                log.info("온도가 낮음");
+            }
+            if (isSensingTemperatureHigh(temperature, userSetTemperature, deviceId)) {
+                firebaseService.sendTemperatureHighMessage(firebaseToken, temperature, deviceId);
+                log.info("온도가 높음");
+            }
+            if (isSensingWaterLevelLow(waterLevel, userSetWaterLevel, deviceId)) {
+                firebaseService.sendWaterLevelLowMessage(firebaseToken, waterLevel, deviceId);
+                log.info("물 수위가 낮아짐");
+            }
+            if (isSensingPhLow(ph, userSetPh, deviceId)) {
+                firebaseService.sendPhLowMessage(firebaseToken, ph, deviceId);
+                log.info("ph가 낮아짐");
+            }
+            if (isSensingPhHigh(ph, userSetPh, deviceId)) {
+                firebaseService.sendPhHighMessage(firebaseToken, ph, deviceId);
+                log.info("ph가 높아짐");
+            }
+            if (isSensingTurbidity(turbidity, userSetTurbidity, deviceId)) {
+                firebaseService.sendTurbidityMessage(firebaseToken, turbidity, deviceId);
+                log.info("탁도가 높음");
+            }
+            if (isSensingLeftovers(checkLeftovers)) {
+                firebaseService.sendLeftoversMessage(firebaseToken, deviceId);
+                log.info("먹이 부족");
+            }
         }
         return "OK";
+
     }
 
     //푸쉬 알림 조건

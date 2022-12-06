@@ -23,7 +23,7 @@ public class SecurityConfig {
 
         httpSecurity
                 .authorizeRequests()
-                .mvcMatchers("/","/login","/bowl","/sendMessageTest123","/sendMessageTest1","/sendMessageTest2","/sendMessageTest3","/sendMessageTest4","/sendMessageTest5","/test").permitAll()
+                .mvcMatchers("/","/h2-console/**","/login","/bowl","/test").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
