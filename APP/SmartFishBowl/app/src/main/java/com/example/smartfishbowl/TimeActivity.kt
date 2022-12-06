@@ -55,6 +55,7 @@ class TimeActivity : AppCompatActivity() {
         val confirm : Button = mView.findViewById(R.id.btn_settime_ok)
         val cancel : Button = mView.findViewById(R.id.btn_settime_no)
         with(hour){
+            value = prefs.getInt("FirstHour", 0)
             minValue = 0
             maxValue = 23
             wrapSelectorWheel = false

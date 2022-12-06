@@ -106,6 +106,8 @@ class ChangeActivity : AppCompatActivity() {
                         Log.d("sendDevice", "FAIL")
                     }
                 })
+                val intent = Intent(applicationContext, MenuActivity::class.java)
+                startActivity(intent)
             }
         })
     }
