@@ -8,12 +8,14 @@ import com.gachon.fishbowl.repository.DeviceIdRepository;
 import com.gachon.fishbowl.repository.UserSetFoodTimeRepository;
 import com.gachon.fishbowl.repository.UserSetRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserSetFoodTimeService {
@@ -105,7 +107,12 @@ public class UserSetFoodTimeService {
     public void deleteFoodTimeAndCnt(Long deviceId) {
         Optional<DeviceId> byId = deviceIdRepository.findById(deviceId);
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(byId.get());
-        Optional<List<UserSetFoodTime>> allByUserSet = userSetFoodTimeRepository.findAllByUserSet(byDeviceId.get());
-        allByUserSet.get().iterator().forEachRemaining(e->userSetFoodTimeRepository.delete(e));
+        if (byDeviceId.isPresent()) {
+            Optional<List<UserSetFoodTime>> allByUserSet = userSetFoodTimeRepository.findAllByUserSet(byDeviceId.get());
+            allByUserSet.get().iterator().forEachRemaining(e->userSetFoodTimeRepository.delete(e));
+        }else {
+            log.info("userSetFoodTime 없어서 삭제 안함");
+        }
+
     }
 }

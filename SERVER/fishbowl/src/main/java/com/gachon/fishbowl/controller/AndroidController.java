@@ -227,7 +227,12 @@ public class AndroidController {
         userSetFoodTimeService.deleteFoodTimeAndCnt(deviceId.getId()); //먹이 배급 테이블 삭제
 
         Optional<UserSet> userSet = userSetService.getUserSet(deviceId);
-        userSetService.deleteUserSet(userSet.get()); //userset삭제
+        if (userSet.isPresent()) {
+            userSetService.deleteUserSet(userSet.get()); //userset삭제
+        }else {
+            log.info("userSet 없어서 삭제 안함");
+        }
+
 
         Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(deviceId);
         userDeviceService.deleteUserDevice(userDeviceByDeviceId.get()); //userdevice 삭제
