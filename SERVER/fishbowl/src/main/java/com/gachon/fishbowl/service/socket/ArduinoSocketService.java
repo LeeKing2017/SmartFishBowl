@@ -66,7 +66,7 @@ public class ArduinoSocketService extends TextWebSocketHandler {
                 if (byUserSet.get().getNumberOfFirstFeedings() != null) {
                     /*stringStringHashMap.put("\"firstTime\"", byUserSet.get().getFirstTime().toString());
                     stringStringHashMap.put("\"numberOfFirstFeedings\"", byUserSet.get().getNumberOfFirstFeedings().toString());*/
-                    returnJsonObject.put("firstTime",byUserSet.get().getFirstTime().toString());
+                    returnJsonObject.put("firstTime",byUserSet.get().getFirstTime().toString()+":00");
                     returnJsonObject.put("numberOfFirstFeedings",byUserSet.get().getNumberOfFirstFeedings().toString());
                 } else {
                    /* stringStringHashMap.put("\"firstTime\"", "\"\"");
@@ -78,7 +78,7 @@ public class ArduinoSocketService extends TextWebSocketHandler {
                 if (byUserSet.get().getNumberOfSecondFeedings() != null) {
                     /*stringStringHashMap.put("\"secondTime\"", byUserSet.get().getSecondTime().toString());
                     stringStringHashMap.put("\"numberOfSecondFeedings\"", byUserSet.get().getNumberOfSecondFeedings().toString());*/
-                    returnJsonObject.put("secondTime",byUserSet.get().getSecondTime().toString());
+                    returnJsonObject.put("secondTime",byUserSet.get().getSecondTime().toString()+":00");
                     returnJsonObject.put("numberOfSecondFeedings",byUserSet.get().getNumberOfSecondFeedings().toString());
                 } else {
                   /*  stringStringHashMap.put("\"secondTime\"", "\"\"");
@@ -90,7 +90,7 @@ public class ArduinoSocketService extends TextWebSocketHandler {
                 if (byUserSet.get().getNumberOfThirdFeedings() != null) {
                     /*stringStringHashMap.put("\"thirdTime\"", byUserSet.get().getThirdTime().toString());
                     stringStringHashMap.put("\"numberOfThirdFeedings\"", byUserSet.get().getNumberOfThirdFeedings().toString());*/
-                    returnJsonObject.put("thirdTime",byUserSet.get().getThirdTime().toString());
+                    returnJsonObject.put("thirdTime",byUserSet.get().getThirdTime().toString()+":00");
                     returnJsonObject.put("numberOfThirdFeedings",byUserSet.get().getNumberOfThirdFeedings().toString());
                 } else {
                     /*stringStringHashMap.put("\"thirdTime\"", "\"\"");
