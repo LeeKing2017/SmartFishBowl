@@ -174,30 +174,40 @@ public class ArduinoSocketService extends TextWebSocketHandler {
             Optional<UserDevice> tokenByDeviceId = userDeviceRepository.findByDeviceId(sensingDeviceId);
             String firebaseToken = tokenByDeviceId.get().getUserId().getFireBaseToken();
             //푸쉬 알림 보내기
-            if (isSensingTemperatureLow(temperature, userSetTemperature, deviceId)) {
-                firebaseService.sendTemperatureLowMessage(firebaseToken, temperature, deviceId);
-                log.info("온도가 낮음");
+
+            if (userSetTemperature != null){
+                if (isSensingTemperatureLow(temperature, userSetTemperature, deviceId)) {
+                    firebaseService.sendTemperatureLowMessage(firebaseToken, temperature, deviceId);
+                    log.info("온도가 낮음");
+                }
+                if (isSensingTemperatureHigh(temperature, userSetTemperature, deviceId)) {
+                    firebaseService.sendTemperatureHighMessage(firebaseToken, temperature, deviceId);
+                    log.info("온도가 높음");
+                }
             }
-            if (isSensingTemperatureHigh(temperature, userSetTemperature, deviceId)) {
-                firebaseService.sendTemperatureHighMessage(firebaseToken, temperature, deviceId);
-                log.info("온도가 높음");
+            if (userSetWaterLevel != null) {
+                if (isSensingWaterLevelLow(waterLevel, userSetWaterLevel, deviceId)) {
+                    firebaseService.sendWaterLevelLowMessage(firebaseToken, waterLevel, deviceId);
+                    log.info("물 수위가 낮아짐");
+                }
             }
-            if (isSensingWaterLevelLow(waterLevel, userSetWaterLevel, deviceId)) {
-                firebaseService.sendWaterLevelLowMessage(firebaseToken, waterLevel, deviceId);
-                log.info("물 수위가 낮아짐");
+            if (userSetPh != null) {
+                if (isSensingPhLow(ph, userSetPh, deviceId)) {
+                    firebaseService.sendPhLowMessage(firebaseToken, ph, deviceId);
+                    log.info("ph가 낮아짐");
+                }
+                if (isSensingPhHigh(ph, userSetPh, deviceId)) {
+                    firebaseService.sendPhHighMessage(firebaseToken, ph, deviceId);
+                    log.info("ph가 높아짐");
+                }
             }
-            if (isSensingPhLow(ph, userSetPh, deviceId)) {
-                firebaseService.sendPhLowMessage(firebaseToken, ph, deviceId);
-                log.info("ph가 낮아짐");
+            if (userSetTurbidity != null) {
+                if (isSensingTurbidity(turbidity, userSetTurbidity, deviceId)) {
+                    firebaseService.sendTurbidityMessage(firebaseToken, turbidity, deviceId);
+                    log.info("탁도가 높음");
+                }
             }
-            if (isSensingPhHigh(ph, userSetPh, deviceId)) {
-                firebaseService.sendPhHighMessage(firebaseToken, ph, deviceId);
-                log.info("ph가 높아짐");
-            }
-            if (isSensingTurbidity(turbidity, userSetTurbidity, deviceId)) {
-                firebaseService.sendTurbidityMessage(firebaseToken, turbidity, deviceId);
-                log.info("탁도가 높음");
-            }
+
             if (isSensingLeftovers(checkLeftovers)) {
                 firebaseService.sendLeftoversMessage(firebaseToken, deviceId);
                 log.info("먹이 부족");
