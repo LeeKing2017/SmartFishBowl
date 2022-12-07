@@ -258,7 +258,8 @@ public class AndroidController {
         Iterator<UserDevice> iterator = allUserDeviceByUserId.get().iterator();
 
         while (iterator.hasNext()) {
-            Optional<UserSet> userSet = userSetService.getUserSet(iterator.next().getDeviceId());
+            UserDevice next = iterator.next();
+            Optional<UserSet> userSet = userSetService.getUserSet(next.getDeviceId());
             if (userSet.isPresent()) {
                 userSetService.deleteUserSet(userSet.get()); //userset삭제
             }else {
@@ -266,7 +267,7 @@ public class AndroidController {
             }
 
 //            Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(iterator.next().getDeviceId());
-            userDeviceService.deleteUserDevice(iterator.next()); //userdevice 삭제
+            userDeviceService.deleteUserDevice(next); //userdevice 삭제
         }
         userIdService.deleteUser(userId.get()); //userId 삭제
         return new ResponseEntity<>("탈퇴되었습니다", HttpStatus.OK);
