@@ -187,16 +187,19 @@ public class AndroidController {
         Optional<UserId> userId = userIdService.getUserId(authentication.getName());
 
 
-        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
+//        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
 
-        Optional<UserSet> userSet = userSetService.getUserSet(userDeviceByUserId.get().getDeviceId());
+        Optional<DeviceId> deviceId = deviceIdService.getDeviceId(userSetDTO.getDeviceId());
+        Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(deviceId.get());
+
+        Optional<UserSet> userSet = userSetService.getUserSet(userDeviceByDeviceId.get().getDeviceId());
         if (userSet.isEmpty()) {
             log.info("사용자 설정 값 새로 등록");
             UserSet build = UserSet.builder().userSetTemperature(userSetDTO.getTemperature())
                     .userSetTurbidity(userSetDTO.getTurbidity())
                     .userSetWaterLevel(userSetDTO.getWaterLevel())
                     .userSetPh(userSetDTO.getPh())
-                    .deviceId(userDeviceByUserId.get().getDeviceId())
+                    .deviceId(userDeviceByDeviceId.get().getDeviceId())
                     .build();
             userSetService.saveUserSet(build);
             return new ResponseEntity<>("사용자가 설정한 수치가 등록되었습니다.", HttpStatus.OK);
