@@ -144,24 +144,45 @@ public class AndroidController {
 
         }
 
-        log.info("{}이 먹이시간 설정 메서드 호출", userEmail);
-        if (feedTimeDto.getFirstTime() != null && feedTimeDto.getNumberOfFirstFeedings() != null) {
+        log.info("{}이 먹이시간 설정 메서드 호출", userEmail); //처음엔 다 널-> 하나만 넣으면 나머지는 0 -> 초기화하면 다 널
+        if (feedTimeDto.getNumberOfFirstFeedings()!= null && feedTimeDto.getNumberOfFirstFeedings() != 0) {
             userSetFoodTimeService.setFirstFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getFirstTime(), feedTimeDto.getNumberOfFirstFeedings());
         }
-        if (feedTimeDto.getSecondTime() != null && feedTimeDto.getNumberOfSecondFeedings() != null) {
+        if (feedTimeDto.getNumberOfFirstFeedings() == null) {
+            userSetFoodTimeService.setFirstFoodTimeAndCnt(feedTimeDto.getDeviceId(),null,null);
+        }
+        if (feedTimeDto.getNumberOfSecondFeedings()!= null && feedTimeDto.getNumberOfSecondFeedings() != 0) {
             userSetFoodTimeService.setSecondFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getSecondTime(), feedTimeDto.getNumberOfSecondFeedings());
         }
-        if (feedTimeDto.getThirdTime() != null && feedTimeDto.getNumberOfThirdFeedings() != null) {
+        if (feedTimeDto.getNumberOfSecondFeedings() == null) {
+            userSetFoodTimeService.setSecondFoodTimeAndCnt((feedTimeDto.getDeviceId()), null, null);
+        }
+        if (feedTimeDto.getNumberOfThirdFeedings()!= null && feedTimeDto.getNumberOfThirdFeedings() != 0) {
             userSetFoodTimeService.setThirdFoodTimeAndCnt(feedTimeDto.getDeviceId(), feedTimeDto.getThirdTime(), feedTimeDto.getNumberOfThirdFeedings());
+        }
+        if (feedTimeDto.getNumberOfThirdFeedings() == null) {
+            userSetFoodTimeService.setThirdFoodTimeAndCnt((feedTimeDto.getDeviceId()), null, null);
         }
 
         return new ResponseEntity<>("먹이 지급 설정이 완료되었습니다.", HttpStatus.OK);
     }
 
-    @PostMapping("/setUserSet")
+    @PostMapping("/setUserSet") //각각의 셋팅값이 0 또는 0.0일때는 null로 저장할 것
     ResponseEntity<String> setUserSet(@RequestBody UserSetDTO userSetDTO) { //온도 탁도 ph 블라블라 묶어서 세팅값 받는 거//디비에 컬럼이 추가되는 오류,컬럼 값 변경으로 수정 요망
         log.info("userSetDTO.toString() : {}", userSetDTO.toString());
         log.info("SecurityContextHolder.getContext().getAuthentication().getName() : {}", SecurityContextHolder.getContext().getAuthentication().getName());
+        if (userSetDTO.getPh().compareTo(0.0) == 0) {
+            userSetDTO.setPh(null);
+        }
+        if (userSetDTO.getTemperature().compareTo(0.0) == 0) {
+            userSetDTO.setTemperature(null);
+        }
+        if (userSetDTO.getTurbidity().compareTo(0.0) == 0) {
+            userSetDTO.setTurbidity(null);
+        }
+        if (userSetDTO.getWaterLevel() == 0) {
+            userSetDTO.setWaterLevel(null);
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<UserId> userId = userIdService.getUserId(authentication.getName());
 
@@ -251,3 +272,4 @@ public class AndroidController {
 
 
 }
+
