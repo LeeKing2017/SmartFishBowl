@@ -265,8 +265,8 @@ public class AndroidController {
                 log.info("userSet 없어서 삭제 안함");
             }
 
-            Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(iterator.next().getDeviceId());
-            userDeviceService.deleteUserDevice(userDeviceByDeviceId.get()); //userdevice 삭제
+//            Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(iterator.next().getDeviceId());
+            userDeviceService.deleteUserDevice(iterator.next()); //userdevice 삭제
         }
         userIdService.deleteUser(userId.get()); //userId 삭제
         return new ResponseEntity<>("탈퇴되었습니다", HttpStatus.OK);

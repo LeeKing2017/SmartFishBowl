@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +29,15 @@ class FishbowlApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Optional<DeviceId> byId1 = deviceIdRepository.findById(123L);
-		if (byId1.isPresent()) {
+		List<String> strings = new ArrayList<>();
+		strings.add("1qjs");
+		strings.add("2qjs");
+		strings.add("3qjs");
+		strings.add("4qjs");
 
+		Iterator<String> iterator = strings.iterator();
+		while (iterator.hasNext()) {
+			log.info(iterator.next());
 		}
 
 	}
