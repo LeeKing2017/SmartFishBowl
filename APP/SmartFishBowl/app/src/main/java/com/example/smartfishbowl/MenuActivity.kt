@@ -13,10 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
-import com.example.smartfishbowl.api.APIS
-import com.example.smartfishbowl.api.CurrentDevice
-import com.example.smartfishbowl.api.Getting
-import com.example.smartfishbowl.api.Setting
+import com.example.smartfishbowl.api.*
 import com.example.smartfishbowl.databinding.AlertdialogEdittextDecimalBinding
 import com.example.smartfishbowl.databinding.AlertdialogEdittextNumberBinding
 import com.example.smartfishbowl.sharedpreferences.PreferencesUtil
@@ -57,10 +54,10 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         first_time.text = "첫번째 시간: " + pref.getInt("FirstHour", 0) + "시 " + pref.getInt("FirstMinute", 0) + "분, " + pref.getInt("FirstTotal", 0) + "회"
         second_time.text = "두번째 시간: "+pref.getInt("SecondHour", 0) + "시 " + pref.getInt("SecondMinute", 0) + "분, "+ pref.getInt("SecondTotal", 0) + "회"
         third_time.text = "세번째 시간: "+pref.getInt("ThirdHour", 0) + "시 " + pref.getInt("ThirdMinute", 0) + "분, "+ pref.getInt("ThirdTotal", 0) + "회"
-        tmp.text = "희망 온도: ${pref.getString("tmp", "25")} ℃"
-        hgt.text = "희망 수위: ${pref.getString("hgt", "10")} CM"
-        ph.text = "희망 PH: ${pref.getString("ph", "7")}"
-        drt.text = "희망 탁도: ${pref.getString("drt", "1")}"
+        tmp.text = "희망 온도: ${pref.getString("tmp", "0")} ℃"
+        hgt.text = "희망 수위: ${pref.getString("hgt", "0")} CM"
+        ph.text = "희망 PH: ${pref.getString("ph", "0")}"
+        drt.text = "희망 탁도: ${pref.getString("drt", "0")}"
         Log.d("CURRENTDEVICE", pref.getString("CurrentDevice", "0"))
         val curD = CurrentDevice(pref.getString("CurrentDevice", "0").toLong())
         apis.getValues("Bearer " + pref.getString("JWT", "error"), curD).enqueue(object : Callback<Getting>{
@@ -232,6 +229,68 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                 }
             }
+            R.id.item5 -> {
+                val setting = Setting(
+                    null,
+                    null,
+                    null,
+                    null,
+                    pref.getString("CurrentDevice", "0").toLong()
+                )
+                apis.settingValue("Bearer " + pref.getString("JWT", "error"), setting).enqueue(object : Callback<String>{
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        Log.d("Response", "SUCCESS")
+                    }
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d("Response", "FAIL")
+                    }
+                })
+                Toast.makeText(this@MenuActivity, "푸시 알림 전체 해제", Toast.LENGTH_SHORT).show()
+                pref.setString("tmp", "0")
+                pref.setString("hgt", "0")
+                pref.setString("ph", "0")
+                pref.setString("drt", "0")
+                tmp.text = "희망 온도: ℃"
+                hgt.text = "희망 수위: CM"
+                ph.text = "희망 PH: "
+                drt.text = "희망 탁도: "
+                activity_drawer.closeDrawers()
+            }
+            R.id.item6 -> {
+                val foodSetting = FoodSetting(
+                    pref.getString("CurrentDevice", "0").toLong(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                )
+                apis.setTime("Bearer " + pref.getString("JWT", "error"), foodSetting).enqueue(object : Callback<String>{
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        Log.d("Response", "SUCCESS")
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d("Response", "FAIL")
+                    }
+
+                })
+                first_time.text = "첫번째 시간: 0시 0분, 0회"
+                second_time.text = "두번째 시간: 0시 0분, 0회"
+                third_time.text = "세번째 시간: 0시 0분, 0회"
+                pref.setInt("FirstHour", 0)
+                pref.setInt("SecondHour", 0)
+                pref.setInt("ThirdHour", 0)
+                pref.setInt("FirstMinute", 0)
+                pref.setInt("SecondMinute", 0)
+                pref.setInt("ThirdMinute", 0)
+                pref.setInt("FirstTotal", 0)
+                pref.setInt("SecondTotal", 0)
+                pref.setInt("ThirdTotal", 0)
+                Toast.makeText(this@MenuActivity, "자동 먹이 급여 해제", Toast.LENGTH_SHORT).show()
+                activity_drawer.closeDrawers()
+            }
         }
         return false
     }
@@ -243,10 +302,10 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         first_time.text = "첫번째 시간: " + pref.getInt("FirstHour", 0) + "시 " + pref.getInt("FirstMinute", 0) + "분, " + pref.getInt("FirstTotal", 0) + "회"
         second_time.text = "두번째 시간: "+pref.getInt("SecondHour", 0) + "시 " + pref.getInt("SecondMinute", 0) + "분, "+ pref.getInt("SecondTotal", 0) + "회"
         third_time.text = "세번째 시간: "+pref.getInt("ThirdHour", 0) + "시 " + pref.getInt("ThirdMinute", 0) + "분, "+ pref.getInt("ThirdTotal", 0) + "회"
-        tmp.text = "희망 온도: ${pref.getString("tmp", "25")} ℃"
-        hgt.text = "희망 수위: ${pref.getString("hgt", "10")} CM"
-        ph.text = "희망 PH: ${pref.getString("ph", "7")}"
-        drt.text = "희망 탁도: ${pref.getString("drt", "1")}"
+        tmp.text = "희망 온도: ${pref.getString("tmp", "0")} ℃"
+        hgt.text = "희망 수위: ${pref.getString("hgt", "0")} CM"
+        ph.text = "희망 PH: ${pref.getString("ph", "0")}"
+        drt.text = "희망 탁도: ${pref.getString("drt", "0")}"
         val curD = CurrentDevice(pref.getString("CurrentDevice", "0").toLong())
         apis.getValues("Bearer " + pref.getString("JWT", "error"), curD).enqueue(object : Callback<Getting>{
             override fun onResponse(call: Call<Getting>, response: Response<Getting>) {

@@ -129,10 +129,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:theme="@style/ButtonStyle"
-                    android:background="@color/cyan200"
+                    android:background="@color/depth1"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/regular"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/black"
                     android:text="값 수정"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -175,10 +175,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:theme="@style/ButtonStyle"
-                    android:background="@color/cyan200"
+                    android:background="@color/depth1"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/regular"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/black"
                     android:text="값 수정"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -221,10 +221,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:theme="@style/ButtonStyle"
-                    android:background="@color/cyan200"
+                    android:background="@color/depth1"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/regular"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/black"
                     android:text="값 수정"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -267,10 +267,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:theme="@style/ButtonStyle"
-                    android:background="@color/cyan200"
+                    android:background="@color/depth1"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/regular"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/black"
                     android:text="값 수정"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

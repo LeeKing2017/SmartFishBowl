@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class CookieUtils {
-
-
     public Cookie generateCookie(String name, String value, String path, boolean httpOnly, int maxAge, String domain) {
 
         Cookie cookie = new Cookie(name, value);

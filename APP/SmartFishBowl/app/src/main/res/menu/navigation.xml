@@ -17,4 +17,12 @@
         android:icon = "@drawable/withdrawal"
         android:title = "회원 탈퇴"
         />
+    <item android:id = "@+id/item5"
+        android:icon = "@drawable/ic_baseline_close_24"
+        android:title = "세팅 값 초기화"
+        />
+    <item android:id = "@+id/item6"
+        android:icon = "@drawable/ic_baseline_alarm_off_24"
+        android:title = "자동 먹이 급여 끄기"
+        />
 </menu>
