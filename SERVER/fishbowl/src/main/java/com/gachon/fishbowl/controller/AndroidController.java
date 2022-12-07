@@ -253,12 +253,13 @@ public class AndroidController {
 //        userSetFoodTimeService.deleteFoodTimeAndCnt(deviceId.getId()); //먹이 배급 테이블 삭제
 
         Optional<List<UserDevice>> allUserDeviceByUserId = userDeviceService.getAllUserDeviceByUserId(userId.get());
-        allUserDeviceByUserId.get().iterator().forEachRemaining(e->userSetFoodTimeService.deleteFoodTimeAndCnt(e.getDeviceId().getId()));
+//        allUserDeviceByUserId.get().iterator().forEachRemaining(e->userSetFoodTimeService.deleteFoodTimeAndCnt(e.getDeviceId().getId()));
 
         Iterator<UserDevice> iterator = allUserDeviceByUserId.get().iterator();
 
         while (iterator.hasNext()) {
             UserDevice next = iterator.next();
+            userSetFoodTimeService.deleteFoodTimeAndCnt(next.getDeviceId().getId());
             Optional<UserSet> userSet = userSetService.getUserSet(next.getDeviceId());
             if (userSet.isPresent()) {
                 userSetService.deleteUserSet(userSet.get()); //userset삭제
