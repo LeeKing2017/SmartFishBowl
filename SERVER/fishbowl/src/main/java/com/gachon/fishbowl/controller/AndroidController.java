@@ -22,6 +22,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -246,21 +248,26 @@ public class AndroidController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Optional<UserId> userId = userIdService.getUserId(email);
-        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
-        DeviceId deviceId = userDeviceByUserId.get().getDeviceId();
-        userSetFoodTimeService.deleteFoodTimeAndCnt(deviceId.getId()); //먹이 배급 테이블 삭제
+//        Optional<UserDevice> userDeviceByUserId = userDeviceService.getUserDeviceByUserId(userId.get());
+//        DeviceId deviceId = userDeviceByUserId.get().getDeviceId();
+//        userSetFoodTimeService.deleteFoodTimeAndCnt(deviceId.getId()); //먹이 배급 테이블 삭제
 
-        Optional<UserSet> userSet = userSetService.getUserSet(deviceId);
-        if (userSet.isPresent()) {
-            userSetService.deleteUserSet(userSet.get()); //userset삭제
-        }else {
-            log.info("userSet 없어서 삭제 안함");
+        Optional<List<UserDevice>> allUserDeviceByUserId = userDeviceService.getAllUserDeviceByUserId(userId.get());
+        allUserDeviceByUserId.get().iterator().forEachRemaining(e->userSetFoodTimeService.deleteFoodTimeAndCnt(e.getDeviceId().getId()));
+
+        Iterator<UserDevice> iterator = allUserDeviceByUserId.get().iterator();
+
+        while (iterator.hasNext()) {
+            Optional<UserSet> userSet = userSetService.getUserSet(iterator.next().getDeviceId());
+            if (userSet.isPresent()) {
+                userSetService.deleteUserSet(userSet.get()); //userset삭제
+            }else {
+                log.info("userSet 없어서 삭제 안함");
+            }
+
+            Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(iterator.next().getDeviceId());
+            userDeviceService.deleteUserDevice(userDeviceByDeviceId.get()); //userdevice 삭제
         }
-
-
-        Optional<UserDevice> userDeviceByDeviceId = userDeviceService.getUserDeviceByDeviceId(deviceId);
-        userDeviceService.deleteUserDevice(userDeviceByDeviceId.get()); //userdevice 삭제
-
         userIdService.deleteUser(userId.get()); //userId 삭제
         return new ResponseEntity<>("탈퇴되었습니다", HttpStatus.OK);
     }

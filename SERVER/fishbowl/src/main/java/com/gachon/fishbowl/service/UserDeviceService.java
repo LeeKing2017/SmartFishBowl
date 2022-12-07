@@ -35,6 +35,10 @@ public class UserDeviceService {
         return userDeviceRepository.findByDeviceId(deviceId);
     }
 
+    public Optional<List<UserDevice>> getAllUserDeviceByUserId(UserId userId) {
+        return userDeviceRepository.findAllByUserId(userId);
+    }
+
     /**
      *
      * @param email
