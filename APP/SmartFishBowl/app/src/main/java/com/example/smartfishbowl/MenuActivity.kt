@@ -231,10 +231,10 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.item5 -> {
                 val setting = Setting(
-                    null,
-                    null,
-                    null,
-                    null,
+                    0.0,
+                    0,
+                    0.0,
+                    0.0,
                     pref.getString("CurrentDevice", "0").toLong()
                 )
                 apis.settingValue("Bearer " + pref.getString("JWT", "error"), setting).enqueue(object : Callback<String>{
@@ -250,10 +250,10 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 pref.setString("hgt", "0")
                 pref.setString("ph", "0")
                 pref.setString("drt", "0")
-                tmp.text = "희망 온도: ℃"
-                hgt.text = "희망 수위: CM"
-                ph.text = "희망 PH: "
-                drt.text = "희망 탁도: "
+                tmp.text = "희망 온도: 0℃"
+                hgt.text = "희망 수위: 0CM"
+                ph.text = "희망 PH: 0"
+                drt.text = "희망 탁도: 0"
                 activity_drawer.closeDrawers()
             }
             R.id.item6 -> {
