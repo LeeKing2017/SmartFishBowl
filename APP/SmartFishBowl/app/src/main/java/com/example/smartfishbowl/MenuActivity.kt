@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -29,7 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @SuppressLint("SetTextI18n")
-class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, PopupMenu.OnMenuItemClickListener {
     lateinit var navigationView: NavigationView
     lateinit var drawerLayout: DrawerLayout
     lateinit var viewModel: BowlViewModel
@@ -100,25 +102,7 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         change_hgt.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            val builderItem = AlertdialogEdittextNumberBinding.inflate(layoutInflater)
-            val edittext = builderItem.editText
-            with(builder){
-                setTitle("적정 수위 변경")
-                setMessage("적정 수위를 입력하세요.")
-                setView(builderItem.root)
-                setPositiveButton("확인"){ _: DialogInterface, _: Int ->
-                    if(edittext.text!=null) {
-                        hgt.text = "희망 수위: ${edittext.text} CM"
-                        pref.setString("hgt", edittext.text.toString())
-                        settingValue()
-                    }
-                }
-                setNegativeButton("취소"){ _: DialogInterface, _: Int ->
-                    Toast.makeText(context, "적정 수위 변경 취소", Toast.LENGTH_SHORT).show()
-                }
-                show()
-            }
+            showPopup(change_hgt)
         }
         change_ph.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -291,10 +275,38 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this@MenuActivity, "자동 먹이 급여 해제", Toast.LENGTH_SHORT).show()
                 activity_drawer.closeDrawers()
             }
+
         }
         return false
     }
 
+    override fun onMenuItemClick(item: MenuItem?): Boolean{
+        val pref = PreferencesUtil(applicationContext)
+        when(item?.itemId){
+            R.id.level1 -> {
+                pref.setString("hgt", "1")
+                hgt.text = "희망 수위: ${pref.getString("hgt", "0")} CM"
+                settingValue()
+            }
+            R.id.level2 -> {
+                pref.setString("hgt", "2")
+                hgt.text = "희망 수위: ${pref.getString("hgt", "0")} CM"
+                settingValue()
+            }
+            R.id.level3 -> {
+                pref.setString("hgt", "3")
+                hgt.text = "희망 수위: ${pref.getString("hgt", "0")} CM"
+                settingValue()
+            }
+            R.id.level4 -> {
+                pref.setString("hgt", "4")
+                hgt.text = "희망 수위: ${pref.getString("hgt", "0")} CM"
+                settingValue()
+            }
+        }
+
+        return item != null
+    }
     override fun onResume() {
         super.onResume()
         val pref = PreferencesUtil(applicationContext)
@@ -351,5 +363,11 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.d("sendSetting", "FAIL")
             }
         })
+    }
+    private fun showPopup(v: View){
+        val popup = PopupMenu(this, v)
+        popup.menuInflater.inflate(R.menu.waterlevel, popup.menu)
+        popup.setOnMenuItemClickListener(this)
+        popup.show()
     }
 }
