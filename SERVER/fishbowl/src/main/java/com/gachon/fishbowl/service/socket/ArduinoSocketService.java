@@ -270,8 +270,8 @@ public class ArduinoSocketService extends TextWebSocketHandler {
     public Boolean isSensingWaterLevelLow(Integer waterLevel, Integer dbWaterLevel, Long deviceId){
         DeviceId build = DeviceId.builder().id(deviceId).build();
         Optional<UserSet> byDeviceId = userSetRepository.findByDeviceId(build);
-        dbWaterLevel = dbWaterLevel / 100;
-        Integer dtoWaterLevel = waterLevel / 100;
+        dbWaterLevel = dbWaterLevel;
+        Integer dtoWaterLevel = waterLevel   ;
         if(byDeviceId.isPresent() && byDeviceId.get().getUserSetWaterLevel() != null) {
             if (dbWaterLevel.equals(dtoWaterLevel)) {
                 log.info("DB 센싱 : {}", dbWaterLevel);
